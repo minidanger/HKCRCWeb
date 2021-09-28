@@ -22,7 +22,9 @@ public class Result<T> {
 
   public Result(){}
 
-  public Result(T data){this.data = data;}
+  public Result(T data){
+    this.data = data;
+  }
 
   public static Result success(){
     Result result = new Result<>();
