@@ -10,10 +10,13 @@ import lombok.Data;
 public class User {
   @TableId(type = IdType.AUTO )
   private Integer id;
-  private String username;
-  private String password;
-  private String nickName;
-  private Integer age;
-  private String sex;
-  private String address;
+  private String docketno;
+  private String sitename;
+  private String location;
+  private String trucknumber;
+  private String despatchtime;
+  private String arrivaltime;
+  private String batchname;
+  private double thisload;
+  private double cummulatedqty;
 }

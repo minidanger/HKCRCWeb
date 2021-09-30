@@ -2,7 +2,7 @@
   <div style="padding: 10px">
     <div id="buttons" >
       <el-button size="mini" type="primary" @click="add">新增</el-button>
-      <el-button size="mini" type="primary">导入</el-button>
+      <el-button size="mini" type="primary" @click="loadList">导入</el-button>
       <el-button size="mini" type="primary">导出</el-button>
     </div>
 
@@ -18,37 +18,33 @@
     stripe
     :row-class-name="tableRowClassName">
       <el-table-column
-        prop="docket_no"
-        label="石矢单编号"
+        prop="docketno"
+        label="序列号"
         width="180"
         sortable="true">
       </el-table-column>
       <el-table-column
-          prop="site_name"
+          prop="sitename"
           label="地点"
           width="180"
           sortable="true">
       </el-table-column>
       <el-table-column
-        prop="truck_number"
+        prop="trucknumber"
         label="车牌号码"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="dispatch_time"
-        label="离槽时间">
+        prop="arrivaltime"
+        label="到达时间">
       </el-table-column>
       <el-table-column
-        prop="arrival_time"
-        label="到场地时间">
+        prop="thisload"
+        label="载重">
       </el-table-column>
       <el-table-column
-        prop="this_load"
-        label="载量">
-      </el-table-column>
-      <el-table-column
-        prop="cumulated_qty"
-        label="总埋槽量">
+        prop="cummulatedqty"
+        label="总重">
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="120">
       <template #default="scope">
@@ -77,22 +73,32 @@
 
     <el-dialog title="新增信息" v-model="dialogVisible" width="30%">
       <el-form :model="form"  label-width="120px">
-        <el-form-item label="石矢单编号">
-          <el-input v-model="form.docket_no" style="width: 80%"></el-input>
+        <el-form-item label="序列号">
+          <el-input v-model="form.docketno" style="width: 80%"></el-input>
         </el-form-item>
-        <el-form-item label="昵称">
-          <el-input v-model="form.nickName" style="width: 80%"></el-input>
+        <el-form-item label="地点">
+          <el-input v-model="form.sitename" style="width: 80%"></el-input>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input v-model="form.age" style="width: 80%"></el-input>
+        <el-form-item label="地点2">
+          <el-input v-model="form.location" style="width: 80%"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-radio v-model="form.sex" label="男">男</el-radio>
-          <el-radio v-model="form.sex" label="女">女</el-radio>
-          <el-radio v-model="form.sex" label="未知">未知</el-radio>
+        <el-form-item label="车牌号码">
+          <el-input v-model="form.trucknumber" style="width: 80%"></el-input>
         </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address" style="width: 80%"></el-input>
+        <el-form-item label="离槽时间">
+          <el-input v-model="form.despatchtime" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item label="到达时间">
+          <el-input v-model="form.arrivaltime" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item label="槽点2">
+          <el-input v-model="form.batchname" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item label="载重">
+          <el-input v-model="form.thisload" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item label="总重">
+          <el-input v-model="form.cummulatedqty" style="width: 80%"></el-input>
         </el-form-item>
         <el-form-item label="封面">
           <el-upload action="http://localhost:9090/files/upload" :on-sucess="filesUploadSucces">
@@ -218,6 +224,30 @@ export default {
     add(){
       this.dialogVisible = true
       this.form = {}
+    },
+    timer() {
+      return setInterval(()=>{
+        this.loadList()
+      },5000)
+    },
+    loadList(){
+      request.post("/api/user/load").then(res => { //es6语法
+        console.log(res)
+        if(res.code ==='0' )
+        {
+          this.$message({
+            type: "success",
+            message: "更新成功！"
+          })
+        }else{
+          this.$message({
+            type: "error",
+            message: res.msg
+          })
+        }
+        this.load();
+        this.dialogVisible = false
+      })
     },
     save(){
       if(this.form.id)
