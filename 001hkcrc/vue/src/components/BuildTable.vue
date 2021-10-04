@@ -185,7 +185,8 @@ export default {
     this.load()
     this.loadList()
     this.timer = setInterval(() =>{
-      //this.updateCurrentTruck()
+      this.updateCurrentTruck()
+      //this.tableRowClassName()
     },1000* 1)
   },
   methods: {
@@ -209,11 +210,11 @@ export default {
     tableRowClassName ({row, rowIndex}) {
       //console.log(row, rowIndex);
       let styleJoson = {};
-      if(row.num == this.heightNum ){
-        //console.log("==="+rowIndex)
-        styleJoson.background = "#66ccff";
-        //styleJoson.color = 'green';
 
+      if(row.id == this.heightNum ){
+        console.log("==="+this.heightNum)
+        styleJoson.background = "#66ccff";
+        styleJoson.color = 'green';
         return styleJoson;
       }else{
         return ""
@@ -243,6 +244,7 @@ export default {
     },
     handleSizeChange(pageSize){
       this.pageSize = pageSize
+      this.heightNum = 2;
       this.load()
     },
     handleCurrentChange(pageNum){
@@ -270,6 +272,7 @@ export default {
           })
         }
         this.currentPage = Math.ceil(res.data.num/this.pageSize);
+        this.heightNum = 2;//res.data.num;
         this.load();
         this.dialogVisible = false
       })
@@ -360,7 +363,7 @@ export default {
     return {
       form: {},
       dialogVisible: false,
-      heightNum: 2,
+      heightNum: 5,
       search: '',
       total: 1,
       currentPage: 1,
