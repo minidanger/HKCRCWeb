@@ -2,8 +2,9 @@
   <div style="padding: 10px">
     <div id="buttons" >
       <el-button size="mini" type="primary" @click="add">新增</el-button>
-      <el-button size="mini" type="primary" @click="loadList">导入</el-button>
-      <el-button size="mini" type="primary">导出</el-button>
+      <el-button size="mini" type="primary" @click="loadList">重新导入</el-button>
+      <el-button size="mini" type="primary" @click="deleteList">清除列表</el-button>
+      <el-button @click = "updateCurrentTruck">test</el-button>
     </div>
 
     <div id="search" >
@@ -17,6 +18,12 @@
     style="width: 100%"
     stripe
     :row-class-name="tableRowClassName">
+      <el-table-column
+          prop="num"
+          label="ID"
+          width="180"
+          sortable="true">
+      </el-table-column>
       <el-table-column
         prop="docketno"
         label="序列号"
@@ -65,7 +72,7 @@
         @current-change="handleCurrentChange"
         :current-page="currentPage"
         :page-sizes="[5, 10, 20]"
-        :page-size="10"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
@@ -152,8 +159,8 @@
 #pagination {
   position: absolute;
   left: 0;
-  bottom:0;
-  height: 4%;
+  bottom:4%;
+  height: 8%;
   width: 100%;
   overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
 }
@@ -168,6 +175,10 @@ export default {
   name: 'BuildTable',
   created(){
     this.load()
+    this.loadList()
+    this.timer = setInterval(() =>{
+      //this.updateCurrentTruck()
+    },1000* 1)
   },
   methods: {
     load(){
@@ -217,7 +228,7 @@ export default {
       this.load()
     },
     handleCurrentChange(pageNum){
-      this.pageNum = pageNum
+      this.currentPage = pageNum
       this.load()
     },
 
@@ -225,13 +236,8 @@ export default {
       this.dialogVisible = true
       this.form = {}
     },
-    timer() {
-      return setInterval(()=>{
-        this.loadList()
-      },5000)
-    },
-    loadList(){
-      request.post("/api/user/load").then(res => { //es6语法
+    updateCurrentTruck(){
+      request.get("/api/user/updateCurrentTruck/"+this.total).then(res => { //es6语法
         console.log(res)
         if(res.code ==='0' )
         {
@@ -245,6 +251,47 @@ export default {
             message: res.msg
           })
         }
+        this.currentPage = Math.floor(res.data.num/this.pageSize);
+        this.load();
+        this.dialogVisible = false
+      })
+    },
+    loadList(){
+      request.post("/api/user/loadlist/"+this.total).then(res => { //es6语法
+        console.log(res)
+        if(res.code ==='0' )
+        {
+          this.$message({
+            type: "success",
+            message: "更新成功！"
+          })
+        }else{
+          this.$message({
+            type: "error",
+            message: res.msg
+          })
+        }
+        this.load();
+        this.dialogVisible = false
+      })
+    },
+
+    deleteList(){
+      request.delete("/api/user/deletelist/"+this.total).then(res => { //es6语法
+        console.log(res)
+        if(res.code ==='0' )
+        {
+          this.$message({
+            type: "success",
+            message: "更新成功！"
+          })
+        }else{
+          this.$message({
+            type: "error",
+            message: res.msg
+          })
+        }
+        this.total = 0;
         this.load();
         this.dialogVisible = false
       })
@@ -296,9 +343,9 @@ export default {
       form: {},
       dialogVisible: false,
       search: '',
-      total: 10,
+      total: 1,
       currentPage: 1,
-      pageSize: 10,
+      pageSize: 5,
       tableData: [],
       tableData1: [{
         id: '1',

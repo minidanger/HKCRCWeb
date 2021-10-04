@@ -5,9 +5,11 @@
       <img src="../assets/img/xhj1.png" alt="" style="height:100%; width:50%">
     </div>
 
+    <div id="clock" style="width:30%; margin-top:2%; color:#8d91ff">{{date}}</div>
+
     <div style="flex:1"></div>
 
-    <div style="width: 200px; margin-top:25px">
+    <div style="width: 10%; margin-top:2%">
       <el-dropdown>
       <span class="el-dropdown-link">用户<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
@@ -27,7 +29,32 @@ export default {
   name: 'Header',
   data () {
     return {
-      //pic: require('../../static/img/12.png')
+      //date: new Date()
+      date: String(new Date())
+    }
+  },
+  mounted(){
+    this.timer = setInterval(()=>{
+      let weeks = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+      let months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
+
+      var time=new Date();
+      let yy = String(time.getFullYear());
+      let m = String(time.getMonth());
+      let mm = months[m];
+      let dd = String(time.getDate()<10? '0'+time.getDate():time.getDate());
+      let hou = String(time.getHours()<10? '0'+time.getHours():time.getHours());
+      let min = String(time.getMinutes()<10? '0'+time.getMinutes():time.getMinutes());
+      let sec = String(time.getSeconds()<10? '0'+time.getSeconds():time.getSeconds());
+
+      var wk = time.getDay();
+      let dayth = String(weeks[wk]);
+      this.date = dayth+' '+mm+' '+dd+' '+ yy +','+ hou +':'+min+':'+sec;
+    },1000)
+  },
+  beforeDestroy() {
+    if(this.timer){
+      clearInterval(this.timer);
     }
   }
 }

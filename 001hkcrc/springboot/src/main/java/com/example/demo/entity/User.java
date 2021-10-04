@@ -19,4 +19,5 @@ public class User {
   private String batchname;
   private double thisload;
   private double cummulatedqty;
+  private Integer num;
 }

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
@@ -57,12 +58,13 @@ public class UserController {
                             @RequestParam(defaultValue = "10") Integer pageSize,
                             @RequestParam(defaultValue = "") String search){
     LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
-
     if(StrUtil.isNotBlank(search))
     {
       wrapper.like(User::getDocketno,search);
     }
     Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+
+    //Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), Wrappers.<User>lambdaQuery().like(User::getDocketno,search));
     return Result.success(userPage);
   }
 
@@ -78,18 +80,41 @@ public class UserController {
     return Result.success();
   }
 
+  @DeleteMapping("/deletelist/{num}")
+  public Result<?> deleteList(@PathVariable long num){ //前台传过来的对象映射成实体
+    int deletednum=0;
+
+    for(int id=0;id<3*num;id++)
+    {
+      try{
+        userMapper.deleteById(id);
+        userMapper.deleteById(id);
+        userMapper.deleteById(id);
+      }
+      catch (Exception e){
+        continue;
+      }
+      deletednum++;
+      //if(deletednum==num)break;
+    }
+
+    //userMapper.delete(userMapper);
+    //userMapper.deleteById();
+    return Result.success();
+  }
 
 
-  @PostMapping("/load")
-  public Result<?> load()   { //前台传过来的对象映射成实体
+
+  @PostMapping("/loadlist/{id}")
+  public Result<?> load(@PathVariable int id)   { //前台传过来的对象映射成实体
 
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
-      Document d = builder.parse("C:\\Software\\IDEA_Projects\\HKCRC\\Website\\index1\\dktGetByTrk.xml");
+      Document d = builder.parse("C:\\dktGetByTrk.xml");
       NodeList sList = d.getElementsByTagName("dockets");
 
-
+      int validData=0;
       for (int i = 0; i <sList.getLength() ; i++) {
         Node node = sList.item(i);
         NodeList childNodes = node.getChildNodes();
@@ -112,6 +137,8 @@ public class UserController {
             else if(num==7)user.setThisload(Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue()));
             else if(num==8)user.setCummulatedqty(Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue()));
             else continue;
+            user.setNum(id+i);
+            user.setId(id+i);
             num++;
           }
         }
@@ -123,6 +150,59 @@ public class UserController {
     }
 
     return Result.success();
+  }
+
+  @GetMapping("/updateCurrentTruck/{total}")
+  public Result<?> updateCurrentTruck(@PathVariable int total)   { //前台传过来的对象映射成实体
+
+    String trkno = "truck";
+    int curTruckNum =0;
+    User user = new User();
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+    try {
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document d = builder.parse("C:\\dktGetDocketsCurrent.xml");
+      NodeList sList = d.getElementsByTagName("dockets");
+
+      int validData=0;
+      for (int i = 0; i <sList.getLength() ; i++) {
+        Node node = sList.item(i);
+        NodeList childNodes = node.getChildNodes();
+        int num = 0;
+        for (int j = 0; j <childNodes.getLength() ; j++) {
+          if (childNodes.item(j).getNodeType()==Node.ELEMENT_NODE) {
+            System.out.print(childNodes.item(j).getNodeName() + ":");
+            System.out.println(childNodes.item(j).getFirstChild().getNodeValue());
+            if(num==2)trkno = childNodes.item(j).getFirstChild().getNodeValue().toString();
+            //else continue;
+            num++;
+          }
+        }
+      }
+
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+
+    for(int i=0;i<total; i++)
+    {
+      try{
+        User user2 = userMapper.selectById(i);
+        if(user2!=null) {
+          String truck = user2.getTrucknumber();
+          if (truck.equalsIgnoreCase(trkno))
+          {
+            curTruckNum = user2.getNum();
+            user = user2;
+          }
+        }
+      }catch(Exception e){
+
+      }
+    }
+
+    return Result.success(user);
   }
 
 }
