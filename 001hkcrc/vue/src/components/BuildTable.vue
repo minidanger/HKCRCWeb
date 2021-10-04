@@ -17,7 +17,7 @@
     :data="tableData"
     style="width: 100%"
     stripe
-    :row-class-name="tableRowClassName">
+    :row-style="tableRowClassName">
       <el-table-column
           prop="num"
           label="ID"
@@ -164,6 +164,14 @@
   width: 100%;
   overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
 }
+/*#table.warning-row{*/
+/*  background-color:red;*/
+/*}*/
+
+/*#table.sucess-row{*/
+/*  background-color:blue;*/
+/*}*/
+
 
 </style>
 
@@ -198,8 +206,18 @@ export default {
     filesUploadSucces(res){
       console.log(res)
     },
-    tableRowClassName (id) {
-      console.log(id)
+    tableRowClassName ({row, rowIndex}) {
+      //console.log(row, rowIndex);
+      let styleJoson = {};
+      if(row.num == this.heightNum ){
+        //console.log("==="+rowIndex)
+        styleJoson.background = "#66ccff";
+        //styleJoson.color = 'green';
+
+        return styleJoson;
+      }else{
+        return ""
+      }
     },
     handleEdit(row){
       this.form = JSON.parse(JSON.stringify(row))
@@ -251,7 +269,7 @@ export default {
             message: res.msg
           })
         }
-        this.currentPage = Math.floor(res.data.num/this.pageSize);
+        this.currentPage = Math.ceil(res.data.num/this.pageSize);
         this.load();
         this.dialogVisible = false
       })
@@ -342,6 +360,7 @@ export default {
     return {
       form: {},
       dialogVisible: false,
+      heightNum: 2,
       search: '',
       total: 1,
       currentPage: 1,
