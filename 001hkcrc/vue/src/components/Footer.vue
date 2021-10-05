@@ -1,7 +1,7 @@
 <template>
   <div style = "height:100%; border-bottom: 1px solid red; display:flex">
     <div id = "camera">
-      <img src="../assets/img/carama.jpg" alt="" style="height:100%; width:100%">
+      <img src="../assets/img/camera.jpg" alt="" style="height:100%; width:100%">
     </div>
 
     <div id = "zoonin">

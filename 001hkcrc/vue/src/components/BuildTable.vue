@@ -4,7 +4,7 @@
       <el-button size="mini" type="primary" @click="add">新增</el-button>
       <el-button size="mini" type="primary" @click="loadList">重新导入</el-button>
       <el-button size="mini" type="primary" @click="deleteList">清除列表</el-button>
-      <el-button @click = "updateCurrentTruck">test</el-button>
+<!--      <el-button @click = "updateCurrentTruck">test</el-button>-->
     </div>
 
     <div id="search" >
@@ -71,7 +71,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 20]"
+        :page-sizes="[8, 9, 10]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
@@ -136,6 +136,7 @@
   overflow: hidden;
   /*background-color: #fff9ea;*/
 }
+
 #buttons {
   position: absolute;
   top: 0;  /* 距离上面50像素 */
@@ -147,10 +148,10 @@
 }
 #table {
   position: absolute;
-  top: 30px;  /* 距离上面50像素 */
+  top: 30px;  /* 距离上面30像素 */
   left: 0;
   margin-left:0.5%;
-  height: 78%;
+  height: 78%;/*78%*/
   width: 99.5%;
   overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
   background-color: #fff9ea;
@@ -186,10 +187,10 @@ export default {
     this.loadList()
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
-      //this.tableRowClassName()
     },1000* 1)
   },
   methods: {
+
     load(){
       request.get("/api/user", {
         params: {
@@ -211,13 +212,17 @@ export default {
       //console.log(row, rowIndex);
       let styleJoson = {};
 
-      if(row.id == this.heightNum ){
-        console.log("==="+this.heightNum)
-        styleJoson.background = "#66ccff";
-        styleJoson.color = 'green';
+      if(row.id === this.currentTrcukID ){
+        console.log("The Current Truck ID is: "+this.currentTrcukID)
+        styleJoson.color = 'blue';
+        // styleJoson.background = "#66ccff";
+        styleJoson.backgroundColor = "##F1D0FB";
         return styleJoson;
       }else{
-        return ""
+        styleJoson.color = 'black';
+        // styleJoson.background = "#66ccff";
+        styleJoson.backgroundColor = "#ECFEFD";
+        return styleJoson;
       }
     },
     handleEdit(row){
@@ -244,7 +249,7 @@ export default {
     },
     handleSizeChange(pageSize){
       this.pageSize = pageSize
-      this.heightNum = 2;
+      //this.heightNum = 2;
       this.load()
     },
     handleCurrentChange(pageNum){
@@ -257,22 +262,30 @@ export default {
       this.form = {}
     },
     updateCurrentTruck(){
-      request.get("/api/user/updateCurrentTruck/"+this.total).then(res => { //es6语法
+      if(this.currentTrcukID==null)this.currentTrcukID=0;
+      request.get("/api/user/updateCurrentTruck/"+this.total+"/"+this.currentTrcukID).then(res => { //es6语法
         console.log(res)
-        if(res.code ==='0' )
+        if(res.code ==='0' && res.data.id != null && res.data.id != 0)
         {
+          // this.$message({
+          //   type: "success",
+          //   message: "更新成功！"
+          // })
+          this.currentPage = Math.ceil(res.data.num/this.pageSize);
+          this.currentTrcukID = res.data.num;
+        }else if(res.code ==='0') {
+          this.currentTrcukID = 0,
           this.$message({
             type: "success",
-            message: "更新成功！"
+            message: "第一辆车还未到达！" +this.currentTrcukID
           })
-        }else{
+        } else{
           this.$message({
             type: "error",
-            message: res.msg
+            message: res.msg +this.currentTrcukID
           })
         }
-        this.currentPage = Math.ceil(res.data.num/this.pageSize);
-        this.heightNum = 2;//res.data.num;
+
         this.load();
         this.dialogVisible = false
       })
@@ -362,12 +375,13 @@ export default {
   data () {
     return {
       form: {},
+      filename:'',
       dialogVisible: false,
-      heightNum: 5,
+      currentTrcukID: 0,
       search: '',
       total: 1,
       currentPage: 1,
-      pageSize: 5,
+      pageSize: 8,
       tableData: [],
       tableData1: [{
         id: '1',
@@ -401,4 +415,7 @@ export default {
     }
   }
 }
+
+
+
 </script>

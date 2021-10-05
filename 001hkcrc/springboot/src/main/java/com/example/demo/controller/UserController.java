@@ -19,9 +19,11 @@ import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Wrapper;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @RestController //返回Json的Controller
 @RequestMapping("/user") //接口的路由
@@ -111,10 +113,11 @@ public class UserController {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
-      Document d = builder.parse("C:\\dktGetByTrk.xml");
+      Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetByTrk.xml");
       NodeList sList = d.getElementsByTagName("dockets");
 
       int validData=0;
+      if(id==0) id=1;
       for (int i = 0; i <sList.getLength() ; i++) {
         Node node = sList.item(i);
         NodeList childNodes = node.getChildNodes();
@@ -122,20 +125,53 @@ public class UserController {
         User user = new User();
         for (int j = 0; j <childNodes.getLength() ; j++) {
           if (childNodes.item(j).getNodeType()==Node.ELEMENT_NODE) {
-            System.out.print(childNodes.item(j).getNodeName() + ":");
-            System.out.println(childNodes.item(j).getFirstChild().getNodeValue());
+            //System.out.print(childNodes.item(j).getNodeName() + ":");
+            //System.out.println(childNodes.item(j).getFirstChild().getNodeValue());
 
             if(num==0)user.setDocketno(childNodes.item(j).getFirstChild().getNodeValue().toString());
             else if(num==1)user.setSitename(childNodes.item(j).getFirstChild().getNodeValue().toString());
             else if(num==2)user.setLocation(childNodes.item(j).getFirstChild().getNodeValue().toString());
             else if(num==3)user.setTrucknumber(childNodes.item(j).getFirstChild().getNodeValue().toString());
-            else if(num==4)user.setDespatchtime(childNodes.item(j).getFirstChild().getNodeValue().toString());
-            else if(num==5)user.setArrivaltime(childNodes.item(j).getFirstChild().getNodeValue());
+            else if(num==4)
+            {
+              try {
+                String val = childNodes.item(j).getFirstChild().getNodeValue();
+                if (childNodes.item(j).getFirstChild().getNodeValue() == null) user.setDespatchtime(" ");
+                else user.setDespatchtime(childNodes.item(j).getFirstChild().getNodeValue().toString());
+              }catch(Exception e){
+                user.setDespatchtime(" ");
+              }
+            }
+            else if(num==5)
+            {
+              try {
+                if (childNodes.item(j).getFirstChild().getNodeValue() == null) user.setArrivaltime(" ");
+                else user.setArrivaltime(childNodes.item(j).getFirstChild().getNodeValue());
+              }catch(Exception e){
+                user.setArrivaltime(" ");
+              }
+            }
             else if(num==6)user.setBatchname(childNodes.item(j).getFirstChild().getNodeValue());
             //else if(num==7)user.setThisload(7);
             //else if(num==8)user.setCummulatedqty(14);
-            else if(num==7)user.setThisload(Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue()));
-            else if(num==8)user.setCummulatedqty(Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue()));
+            else if(num==7)
+            {
+              try {
+                if (childNodes.item(j).getFirstChild().getNodeValue() == null) user.setThisload(0.0);
+                else user.setThisload(Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue()));
+              }catch(Exception e){
+                user.setThisload(0.0);
+              }
+            }
+            else if(num==8)
+            {
+              try {
+                if (childNodes.item(j).getFirstChild().getNodeValue() == null) user.setCummulatedqty(0.0);
+                else user.setCummulatedqty(Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue()));
+              }catch(Exception e){
+                user.setCummulatedqty(0.0);
+              }
+            }
             else continue;
             user.setNum(id+i);
             user.setId(id+i);
@@ -152,17 +188,18 @@ public class UserController {
     return Result.success();
   }
 
-  @GetMapping("/updateCurrentTruck/{total}")
-  public Result<?> updateCurrentTruck(@PathVariable int total)   { //前台传过来的对象映射成实体
-
-    String trkno = "truck";
-    int curTruckNum =0;
+  @GetMapping("/updateCurrentTruck/{total}/{currentTruckID}")
+  public Result<?> updateCurrentTruck(@PathVariable int total, @PathVariable int currentTruckID)   { //前台传过来的对象映射成实体
+    copylatestfiles();
+    String trkno = "truck", despatchTime = "";
+    double thisload = 0.0, loadQual = 0.0;
+    int curTruckNum =0, isMatched = 0;
     User user = new User();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
-      Document d = builder.parse("C:\\dktGetDocketsCurrent.xml");
+      Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetDocketsCurrent.xml");
       NodeList sList = d.getElementsByTagName("dockets");
 
       int validData=0;
@@ -175,6 +212,10 @@ public class UserController {
             System.out.print(childNodes.item(j).getNodeName() + ":");
             System.out.println(childNodes.item(j).getFirstChild().getNodeValue());
             if(num==2)trkno = childNodes.item(j).getFirstChild().getNodeValue().toString();
+            if(num==3)despatchTime = childNodes.item(j).getFirstChild().getNodeValue().toString();
+            if(num==6)thisload = Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue());
+            if(num==7)loadQual = Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue());
+
             //else continue;
             num++;
           }
@@ -195,14 +236,62 @@ public class UserController {
           {
             curTruckNum = user2.getNum();
             user = user2;
+            isMatched = 1;
           }
         }
       }catch(Exception e){
 
       }
     }
+    if(currentTruckID != curTruckNum && isMatched ==1) {
+      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'T' HH:mm:ss");
+      Date date = new Date(System.currentTimeMillis());
+      String timer = formatter.format(date);
+
+      user.setDespatchtime(despatchTime);
+      user.setThisload(thisload);
+      user.setCummulatedqty(loadQual);
+      user.setArrivaltime(timer);
+
+      update(user);
+    }
 
     return Result.success(user);
+  }
+
+  public static void copylatestfiles() {
+    // TODO Auto-generated method stub
+    String batPath = "C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\test.bat"; // 把你的bat脚本路径写在这里
+    File batFile = new File(batPath);
+    boolean batFileExist = batFile.exists();
+    System.out.println("batFileExist:" + batFileExist);
+    if (batFileExist) {
+      callCmd(batPath);
+    }
+  }
+
+  private static void  callCmd(String locationCmd){
+    StringBuilder sb = new StringBuilder();
+    try {
+      Process child = Runtime.getRuntime().exec(locationCmd);
+      InputStream in = child.getInputStream();
+      BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(in));
+      String line;
+      while((line=bufferedReader.readLine())!=null)
+      {
+        sb.append(line + "\n");
+      }
+      in.close();
+      try {
+        child.waitFor();
+      } catch (InterruptedException e) {
+        System.out.println(e);
+      }
+      System.out.println("sb:" + sb.toString());
+      System.out.println("callCmd execute finished");
+    } catch (IOException e) {
+      System.out.println(e);
+    }
   }
 
 }
