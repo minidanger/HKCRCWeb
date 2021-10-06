@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -9,6 +10,9 @@ import com.example.demo.common.Result;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
 import lombok.var;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -24,6 +28,7 @@ import java.sql.Wrapper;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController //返回Json的Controller
 @RequestMapping("/user") //接口的路由
@@ -59,15 +64,40 @@ public class UserController {
   public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                             @RequestParam(defaultValue = "10") Integer pageSize,
                             @RequestParam(defaultValue = "") String search){
-    LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
-    if(StrUtil.isNotBlank(search))
+    if(search.equalsIgnoreCase("o") )
     {
-      wrapper.like(User::getDocketno,search);
-    }
-    Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
 
-    //Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), Wrappers.<User>lambdaQuery().like(User::getDocketno,search));
-    return Result.success(userPage);
+      QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+      //queryWrapper.like("docketno", search);
+      List<User> users = userMapper.selectList(queryWrapper);
+      //ExportExcel<User> ee = new ExportExcel<>();
+      String[] header = {"A","B","C","D","E","F"};
+      ExportExcel<User> ee= new ExportExcel<>();
+      ee.exportExcel(header,users,"test", null);
+
+      GetDocument(users);
+      search="";
+    }
+//    LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
+//    if(StrUtil.isNotBlank(search))
+//    {
+//      wrapper.eq(User::getDocketno,search);
+//    }
+//    Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+//    return Result.success(userPage);
+
+    if(!StrUtil.isNotBlank(search))
+    {
+      LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
+      Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+      return Result.success(userPage);
+    }else{
+      QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+      queryWrapper.like("docketno", search);
+      //List<User> users = userMapper.selectList(queryWrapper);
+      Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize),queryWrapper);
+      return Result.success(userPage);
+    }
   }
 
   @PutMapping
@@ -152,8 +182,6 @@ public class UserController {
               }
             }
             else if(num==6)user.setBatchname(childNodes.item(j).getFirstChild().getNodeValue());
-            //else if(num==7)user.setThisload(7);
-            //else if(num==8)user.setCummulatedqty(14);
             else if(num==7)
             {
               try {
@@ -291,6 +319,52 @@ public class UserController {
       System.out.println("callCmd execute finished");
     } catch (IOException e) {
       System.out.println(e);
+    }
+  }
+
+  public void GetDocument(List<User> resourceList) {
+    String fileName = "API_Document.xlsx";
+    org.apache.poi.xssf.usermodel.XSSFWorkbook wb = new XSSFWorkbook();
+    XSSFSheet sheet = wb.createSheet("API");
+
+    XSSFRow rowHead = sheet.createRow(0);
+    rowHead.createCell(0).setCellValue("Function Category");
+    rowHead.createCell(1).setCellValue("Summary");
+    rowHead.createCell(2).setCellValue("Method");
+    rowHead.createCell(3).setCellValue("URI");
+    rowHead.createCell(4).setCellValue("Request Header");
+    rowHead.createCell(5).setCellValue("Params");
+    rowHead.createCell(6).setCellValue("Request Body");
+    rowHead.createCell(7).setCellValue("Success Code");
+    rowHead.createCell(8).setCellValue("Response Header");
+    rowHead.createCell(9).setCellValue("Response Body");
+    rowHead.createCell(10).setCellValue("Failure Code");
+    rowHead.createCell(11).setCellValue("ETC");
+
+    int rowCount = 1;
+
+    for(User resource : resourceList) {
+      XSSFRow row = sheet.createRow(rowCount++);
+
+      row.createCell(0).setCellValue(resource.getDocketno());
+      row.createCell(1).setCellValue(resource.getDocketno());
+      row.createCell(2).setCellValue(resource.getDocketno());
+      row.createCell(3).setCellValue(resource.getDocketno());
+      row.createCell(4).setCellValue(resource.getDocketno());
+      row.createCell(5).setCellValue(resource.getDocketno());
+      row.createCell(6).setCellValue(resource.getDocketno());
+      row.createCell(7).setCellValue(resource.getDocketno());
+      row.createCell(8).setCellValue(resource.getDocketno());
+      row.createCell(9).setCellValue(resource.getDocketno());
+      row.createCell(10).setCellValue(resource.getDocketno());
+      row.createCell(11).setCellValue(resource.getDocketno());
+    }
+
+    try {
+      wb.write(new FileOutputStream(fileName));
+      //Log.info("REST Resource Documentation Complete");
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
