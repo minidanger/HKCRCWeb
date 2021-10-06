@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -9,26 +8,30 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
-import lombok.var;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+//import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.annotation.Resource;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.sql.Wrapper;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 @RestController //返回Json的Controller
 @RequestMapping("/user") //接口的路由
@@ -63,7 +66,7 @@ public class UserController {
   @GetMapping
   public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                             @RequestParam(defaultValue = "10") Integer pageSize,
-                            @RequestParam(defaultValue = "") String search){
+                            @RequestParam(defaultValue = "") String search) throws Exception {
     if(search.equalsIgnoreCase("o") )
     {
 
@@ -76,6 +79,9 @@ public class UserController {
       ee.exportExcel(header,users,"test", null);
 
       GetDocument(users);
+
+      SendEmail1();
+
       search="";
     }
 //    LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
@@ -366,6 +372,106 @@ public class UserController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public void SendEmail1()throws Exception, MessagingException {
+    String USER_NAME = "halloworld1992@outlook.com";
+    String PASSWORD = "lzl5536556";
+    Properties prop = new Properties();
+    //prop.setProperty("mail.debug","true");
+    prop.put("mail.smtp.auth","true");
+    prop.put("mail.host","smtp.office365.com");//smtp.office365.com
+    prop.put("mail.transport.protocol","smtp");
+    prop.put("mail.smtp.port","587");
+
+    prop.put("mail.smtp.starttls.enable", "true");
+//    prop.put("mail.smtp.socketFactory.port","587");
+//    prop.put("mail.smtp.socketFactory.fallback","false");
+    Session session = Session.getInstance(prop, new Authenticator() {
+      @Override
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(USER_NAME, PASSWORD);
+      }
+    });
+
+    try {
+      Message message = new MimeMessage(session);
+
+      message.setFrom(new InternetAddress(USER_NAME));
+
+      InternetAddress toAddress = new InternetAddress("15021771582@163.com");
+      message.setRecipient(Message.RecipientType.TO, toAddress);
+
+      message.setSubject("test");
+      message.setText("main");
+
+      //Transport transport = session.getTransport();
+//    // 连接邮件服务器
+      //Transport.(USER_NAME, PASSWORD);
+      // 发送邮件
+      Transport.send(message);
+      int a =10;
+    }catch (Exception err){
+      System.out.println("Err");
+    }
+    // 关闭连接
+    //transport.close();
+
+
+
+//    //1. 创建session
+//    //PasswordAuthentication passwordAuthentication = new PasswordAuthentication("15021771582@163.com", "lzl553655612,");
+//    Session session = Session.getDefaultInstance(prop,authenticator);
+//    // 开启Session的Debug模式，这样就可以查看到程序发送e-mail的运行状态
+//    session.setDebug(true);
+//
+//    //2. 通过Session得到transport对象
+//    Transport ts = session.getTransport();
+//    //3. 连上邮件服务器
+//    ts.connect("smtp.163.com","15021771582","lzl5536556,");
+//    //4. 创建邮件
+//    Message message =createAttachMail(session);
+//    //5. 发送邮件
+//    ts.sendMessage(message,message.getAllRecipients());
+//    ts.close();
+  }
+
+  public MimeMessage createAttachMail(Session session)throws Exception{
+    MimeMessage message = new MimeMessage(session);
+
+    //发件人
+    message.setFrom(new InternetAddress("15021771582@163.com"));
+    message.setRecipient(Message.RecipientType.TO, new InternetAddress("15021771582@163.com"));
+    message.setSubject("Just for testing!");
+
+    //邮件正文，为了避免正文中的乱码现象，需要使用charset=UTF-8指名字符编码
+    MimeBodyPart text = new MimeBodyPart();
+    text.setContent("使用JavaMail创建的带附件的邮件","text/html;charset=UTF-8");
+    //创建邮件附件
+    MimeBodyPart attach = new MimeBodyPart();
+    DataHandler dh = new DataHandler(new FileDataSource("C:\\12.png"));
+    attach.setDataHandler(dh);
+    attach.setFileName(dh.getName());
+
+    //创建容器描述数据关系
+    MimeMultipart mp = new MimeMultipart();
+    mp.addBodyPart(text);
+    mp.addBodyPart(attach);
+    mp.setSubType("mixed");
+
+    message.setContent(mp);
+    message.saveChanges();
+    //将创建的Email写入到E盘存储
+    message.writeTo(new FileOutputStream("C:\\attachMail.eml"));
+    //返回生成邮件
+    return message;
+  }
+
+
+  private static void sendMail2()throws Exception{
+//    JavaMailSender javaMailSender = new JavaMailSender();
+//    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
   }
 
 }
