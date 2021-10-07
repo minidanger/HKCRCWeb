@@ -31,8 +31,8 @@ public class ESP32Controller {
      * @return
      * @throws IOException
      */
-    @GetMapping("/weather/{temperature}/{humidity}")
-    public Object weather(ModelAndView model, @PathVariable String temperature, @PathVariable String humidity){
+    @RequestMapping (value = "/weather/{temperature}/{humidity}", method = RequestMethod.GET)
+    public int weather(ModelAndView model, @PathVariable String temperature, @PathVariable String humidity){
         System.out.println("温度为："+temperature);
         System.out.println("湿度为："+humidity);
 //        Map<String, Object> WeatherMap = new HashMap<~>();
@@ -40,7 +40,8 @@ public class ESP32Controller {
 //        WeatherMap.put("10002",humidity);
         //weather.WeatherSource(WeatherMap);
         model.setViewName("main/STM32");
-        return model;
+        return 1;
+
     }
 
 
