@@ -78,6 +78,10 @@
     </el-pagination>
     </div>
 
+    <div id="Footer">
+      <Footer />
+    </div>
+
     <el-dialog title="新增信息" v-model="dialogVisible" width="30%">
       <el-form :model="form"  label-width="120px">
         <el-form-item label="序列号">
@@ -151,7 +155,7 @@
   top: 30px;  /* 距离上面30像素 */
   left: 0;
   margin-left:0.5%;
-  height: 78%;/*78%*/
+  height: 65%;/*78%*/
   width: 99.5%;
   overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
   background-color: #fff9ea;
@@ -160,10 +164,22 @@
 #pagination {
   position: absolute;
   left: 0;
-  bottom:4%;
-  height: 8%;
+  top:68%;
+  height:8%;
   width: 100%;
   overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
+}
+
+#Footer {
+  position: absolute;
+  top: 71.8%;
+  height: 28%;
+
+  left: 0px;  /* 距离右边0像素 */
+  margin-top: 0.2%;
+  width: 100%;
+  overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
+  background-color: #b1deff;
 }
 /*#table.warning-row{*/
 /*  background-color:red;*/
@@ -179,6 +195,10 @@
 <script>
 
 import request from "../utils/request";
+import Header from "./Header";
+import Aside2 from "./Aside2";
+import Footer from "./Footer";
+import Aside from "./Aside";
 
 export default {
   name: 'BuildTable',
@@ -188,6 +208,10 @@ export default {
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
     },1000* 1)
+  },
+  components: {
+    Aside,
+    Footer
   },
   methods: {
 
@@ -388,27 +412,6 @@ export default {
         username: '王小虎',
         nickName: '小王',
         age: 12,
-        sex: '男',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        id: '2',
-        username: '王小虎',
-        nickName: '小王',
-        age: 5,
-        sex: '男',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        id: '3',
-        username: '王小虎',
-        nickName: '小王',
-        age: 8,
-        sex: '男',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        id: '4',
-        username: '王小虎',
-        nickName: '小王',
-        age: 13,
         sex: '男',
         address: '上海市普陀区金沙江路 1518 弄'
       }]

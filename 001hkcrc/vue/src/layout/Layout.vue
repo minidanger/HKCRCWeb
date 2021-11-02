@@ -9,14 +9,17 @@
     <div id = "Table">
       <router-view style = "flex: 1"/>
     </div>
-    <div id="Footer">
-      <Footer />
-    </div>
+<!--    <div id="Footer">-->
+<!--      <Footer />-->
+<!--    </div>-->
 
   </div>
 </template>
 
 <style>
+*{
+  overflow: hidden;
+}
 #Header{
   position: absolute;
   height: 10%;
@@ -30,7 +33,7 @@
   position: absolute;
   top: 10%;  /* 距离上面50像素 */
   left: 15%;
-  height: 70%;
+  height: 89.4%;
   width: 85%;
   margin-left:0.2%;
   margin-top: 0.2%;
@@ -42,10 +45,10 @@
   position: absolute;
   top: 10%;  /* 距离上面50像素 */
   left: 0;
-  height: 70%;
+  height: 89.5%;
   width: 15%;
   margin-top: 0.2%;
-  overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
+  overflow: hidden; /* 当内容过多时y轴出现滚动条 */
   /*background-color: #fff9ea;*/
 }
 #Footer {
