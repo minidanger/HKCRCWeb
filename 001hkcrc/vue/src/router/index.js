@@ -31,9 +31,14 @@ const routes = [
     component:  () => import("@/views/Register")
   },
   {
-    path: '/Aside2',
-    name: 'Aside2',
-    component:  () => import("@/components/Aside2")
+    path: '/Aside',
+    name: 'Aside1',
+    component:  () => import("@/components/Aside")
+  },
+  {
+    path: '/ckPlayer',
+    name: 'ckPlayer',
+    component:  () => import("@/components/ckplayer")
   },
   {
     path: '/about',

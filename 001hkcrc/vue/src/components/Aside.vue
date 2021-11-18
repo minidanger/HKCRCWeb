@@ -9,7 +9,7 @@
         <el-sub-menu index="1" style="width: 100%" class="asideSlot">
           <template #title>
             <i class="el-icon-location"></i>
-            <span>选项</span>
+            <span>选项Test</span>
           </template>
             <el-menu-item index="buildTable">车辆监测</el-menu-item>
             <el-menu-item index="book">安全帽</el-menu-item>
