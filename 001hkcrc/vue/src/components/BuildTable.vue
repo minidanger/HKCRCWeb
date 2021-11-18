@@ -315,6 +315,7 @@ export default {
       })
     },
     loadList(){
+      console.log("start load list")
       request.post("/api/user/loadlist/"+this.total).then(res => { //es6语法
         console.log(res)
         if(res.code ==='0' )

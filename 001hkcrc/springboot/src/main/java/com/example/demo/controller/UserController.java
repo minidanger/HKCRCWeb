@@ -224,7 +224,7 @@ public class UserController {
 
   @GetMapping("/updateCurrentTruck/{total}/{currentTruckID}")
   public Result<?> updateCurrentTruck(@PathVariable int total, @PathVariable int currentTruckID)   { //前台传过来的对象映射成实体
-    copylatestfiles();
+    //copylatestfiles();
     String trkno = "truck", despatchTime = "";
     double thisload = 0.0, loadQual = 0.0;
     int curTruckNum =0, isMatched = 0;
