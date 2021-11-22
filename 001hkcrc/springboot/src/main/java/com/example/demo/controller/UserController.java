@@ -150,8 +150,8 @@ public class UserController {
     System.out.print("======================================");
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
-      Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetByTrk.xml");
-      //Document d = builder.parse("dktGetByTrk.xml");
+      //Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetByTrk.xml");
+      Document d = builder.parse("dktGetByTrk.xml");
       NodeList sList = d.getElementsByTagName("dockets");
 
       int validData=0;
@@ -235,7 +235,8 @@ public class UserController {
 
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
-      Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetDocketsCurrent.xml");
+      //Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetDocketsCurrent.xml");
+      Document d = builder.parse("dktGetDocketsCurrent.xml");
       NodeList sList = d.getElementsByTagName("dockets");
 
       int validData=0;
