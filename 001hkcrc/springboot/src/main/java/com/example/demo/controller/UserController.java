@@ -147,9 +147,11 @@ public class UserController {
   public Result<?> load(@PathVariable int id)   { //前台传过来的对象映射成实体
 
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    System.out.print("======================================");
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
       Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetByTrk.xml");
+      //Document d = builder.parse("dktGetByTrk.xml");
       NodeList sList = d.getElementsByTagName("dockets");
 
       int validData=0;
