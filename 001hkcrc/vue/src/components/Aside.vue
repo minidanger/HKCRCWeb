@@ -27,16 +27,17 @@
             <i class="el-icon-document"></i>
             <span>语言</span>
           </template>
-          <el-menu-item index="buildTable">繁体字</el-menu-item>
-          <el-menu-item index="book">中文</el-menu-item>
+          <el-menu-item index="buildTable" disabled>繁体字</el-menu-item>
+          <el-menu-item index="book" disabled>中文</el-menu-item>
         </el-sub-menu>
+
         <el-sub-menu index="4" style="width: 100%" class="asideSlot">
           <template #title>
             <i class="el-icon-setting"></i>
             <span>设置</span>
           </template>
-          <el-menu-item index="buildTable">**</el-menu-item>
-          <el-menu-item index="book">**</el-menu-item>
+          <el-menu-item index="ShowItems">显示设置</el-menu-item>
+<!--          <el-menu-item index="book">**</el-menu-item>-->
         </el-sub-menu>
       </el-menu>
     </el-col>

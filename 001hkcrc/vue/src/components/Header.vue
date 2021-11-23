@@ -5,7 +5,7 @@
       <img src="../assets/img/xhj1.png" alt="" style="height:100%; width:50%">
     </div>
 
-    <div id="clock" style="width:30%; margin-top:2%; color:#8d91ff">{{date}}</div>
+    <div id="clock" style="width:30%; margin-top:6%; color:#8d91ff">{{date}}</div>
 
     <div style="flex:1"></div>
 

@@ -1,15 +1,15 @@
 <template>
-  <div style="padding: 10px">
+  <div style="padding: 0px">
     <div id="buttons" >
-      <el-button size="mini" type="primary" @click="add">新增</el-button>
-      <el-button size="mini" type="primary" @click="loadList">重新导入</el-button>
-      <el-button size="mini" type="primary" @click="deleteList">清除列表</el-button>
+      <el-button size="mini" type="primary" @click="add" style="width: 23%">新增</el-button>
+      <el-button size="mini" type="primary" @click="loadList" style="width: 32%">重新导入</el-button>
+      <el-button size="mini" type="primary" @click="deleteList" style="width: 32%">清除列表</el-button>
 <!--      <el-button @click = "updateCurrentTruck">test</el-button>-->
     </div>
 
     <div id="search" >
       <el-input  size="mini" v-model="search" placeholder = "请输入关键字" style="width:60%" clearable></el-input>
-      <el-button size="mini" type="primary" style="margin-left: 2px" @click="load">查询</el-button>
+      <el-button id="searchButton" size="mini" type="primary" style="margin-left: 2px" @click="load">查询</el-button>
     </div>
 
     <div id="table">
@@ -22,38 +22,62 @@
           prop="num"
           label="ID"
           width="180"
-          sortable="true">
+          sortable="false"
+          v-if =  this.ShowID>
       </el-table-column>
       <el-table-column
         prop="docketno"
         label="序列号"
         width="180"
-        sortable="true">
+        sortable="false"
+        v-if =  this.ShowDocketNO>
       </el-table-column>
       <el-table-column
           prop="sitename"
           label="地点"
           width="180"
-          sortable="true">
+          sortable="true"
+          v-if =  this.ShowSiteName>
+      </el-table-column>
+      <el-table-column
+          prop="location"
+          label="地点2"
+          width="180"
+          sortable="true"
+          v-if =  this.ShowLocation>
       </el-table-column>
       <el-table-column
         prop="trucknumber"
         label="车牌号码"
-        width="180">
+        width="180"
+        v-if =  this.ShowTruckNO>
+      </el-table-column>
+      <el-table-column
+          prop="batchname"
+          label="槽口"
+          v-if =  this.ShowBatchName>
+      </el-table-column>
+      <el-table-column
+          prop="despatchtime"
+          label="离槽时间"
+          v-if =  this.ShowDespatchT>
       </el-table-column>
       <el-table-column
         prop="arrivaltime"
-        label="到达时间">
+        label="到达时间"
+        v-if =  this.ShowArrivalT>
       </el-table-column>
       <el-table-column
         prop="thisload"
-        label="载重">
+        label="载重"
+        v-if =  this.ShowThisLoad>
       </el-table-column>
       <el-table-column
         prop="cummulatedqty"
-        label="总重">
+        label="总重"
+        v-if =  this.ShowCummulatedqty>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column  label="操作" width="120">
       <template #default="scope">
       <el-button size="mini" @click="handleEdit(scope.row)" type="text">编辑</el-button>
       <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
@@ -132,7 +156,7 @@
 <style scoped>
 #search{
   position: absolute;
-  width:50%;
+  width:45%;
   height: 30px;
   margin-left:0.5%;
   top: 0;
@@ -144,11 +168,19 @@
 #buttons {
   position: absolute;
   top: 0;  /* 距离上面50像素 */
-  left: 48%;
+  left: 40%;
   height: 8%;
-  width: 50%;
+  width: 55%;
   overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
   background-color: #fff9ea;
+}
+#searchButton{
+  position: absolute;
+  top: 0;  /* 距离上面50像素 */
+  left: 60%;
+  height: 8%;
+  width: 25%;
+  overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
 }
 #table {
   position: absolute;
@@ -196,9 +228,10 @@
 
 import request from "../utils/request";
 import Header from "./Header";
-import Aside2 from "./Aside2";
+//import Aside2 from "./Aside2";
 import Footer from "./Footer";
 import Aside from "./Aside";
+import ShowItems from "../views/ShowItems";
 
 export default {
   name: 'BuildTable',
@@ -208,10 +241,113 @@ export default {
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
     },1000* 1)
+
+    try{
+      if (sessionStorage.getItem("ShowID") == String(true)) {
+        this.ShowID = true
+      }else if (sessionStorage.getItem("ShowID") == String(false)){
+        this.ShowID = false
+      }
+    }catch{
+      console.log("failed to get 'ShowID'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowDocketNO") == String(true)) {
+        this.ShowDocketNO = true
+        console.log("created function  1")
+      }else if (sessionStorage.getItem("ShowDocketNO") == String(false)){
+        this.ShowDocketNO = false
+        console.log("created function  2")
+      }
+    }catch{
+      console.log("failed to get 'ShowDocketNO'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowSiteName") == String(true)) {
+        this.ShowSiteName = true
+      }else if (sessionStorage.getItem("ShowSiteName") == String(false)){
+        this.ShowSiteName = false
+      }
+    }catch{
+      console.log("failed to get 'ShowSiteName'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowLocation") == String(true)) {
+        this.ShowLocation = true
+      }else if (sessionStorage.getItem("ShowLocation") == String(false)){
+        this.ShowLocation = false
+      }
+    }catch{
+      console.log("failed to get 'ShowLocation'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowTruckNO") == String(true)) {
+        this.ShowTruckNO = true
+      }else if (sessionStorage.getItem("ShowTruckNO") == String(false)){
+        this.ShowTruckNO = false
+      }
+    }catch{
+      console.log("failed to get 'ShowTruckNO'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowDespatchT") == String(true)) {
+        this.ShowDespatchT = true
+      }else if (sessionStorage.getItem("ShowDespatchT") == String(false)){
+        this.ShowDespatchT = false
+      }
+    }catch{
+      console.log("failed to get 'ShowDespatchT'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowArrivalT") == String(true)) {
+        this.ShowArrivalT = true
+      }else if (sessionStorage.getItem("ShowArrivalT") == String(false)){
+        this.ShowArrivalT = false
+      }
+    }catch{
+      console.log("failed to get 'ShowArrivalT'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowBatchName") == String(true)) {
+        this.ShowBatchName = true
+      }else if (sessionStorage.getItem("ShowBatchName") == String(false)){
+        this.ShowBatchName = false
+      }
+    }catch{
+      console.log("failed to get 'ShowArrivalT'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowThisLoad") == String(true)) {
+        this.ShowThisLoad = true
+      }else if (sessionStorage.getItem("ShowThisLoad") == String(false)){
+        this.ShowThisLoad = false
+      }
+    }catch{
+      console.log("failed to get 'ShowThisLoad'")
+    }
+
+    try{
+      if (sessionStorage.getItem("ShowCummulatedqty") == String(true)) {
+        this.ShowCummulatedqty = true
+      }else if (sessionStorage.getItem("ShowCummulatedqty") == String(false)){
+        this.ShowCummulatedqty = false
+      }
+    }catch{
+      console.log("failed to get 'ShowCummulatedqty'")
+    }
   },
   components: {
     Aside,
-    Footer
+    Footer,
+    ShowItems
   },
   methods: {
 
@@ -399,6 +535,16 @@ export default {
   },
   data () {
     return {
+      ShowID:true,
+      ShowDocketNO: false,
+      ShowSiteName: false,
+      ShowLocation: true,
+      ShowTruckNO: true,
+      ShowDespatchT: true,
+      ShowArrivalT: true,
+      ShowBatchName:false,
+      ShowThisLoad:true,
+      ShowCummulatedqty:false,
       form: {},
       filename:'',
       dialogVisible: false,

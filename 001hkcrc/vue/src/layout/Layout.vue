@@ -69,7 +69,7 @@
 
 // Aside.IsGroundTable = 2
 import Header from "../components/Header";
-import Aside2 from "../components/Aside2";
+//import Aside2 from "../components/Aside2";
 import BuildTable from "../components/BuildTable";
 import Footer from "../components/Footer";
 import Aside from "../components/Aside";
@@ -78,7 +78,7 @@ export default {
   name: 'Layout',
   components: {
     Header,
-    Aside2,
+    //Aside2,
     BuildTable,
     Footer,
     Aside

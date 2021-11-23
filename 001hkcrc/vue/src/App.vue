@@ -11,7 +11,7 @@
 
 <script>
   import Header from './components/Header'
-  import Aside2 from "./components/Aside2";
+  //import Aside2 from "./components/Aside2";
   import BuildTable from "./components/BuildTable";
   import Footer from "./components/Footer";
   import Aside from "./components/Aside";
