@@ -37,6 +37,8 @@ import java.util.Properties;
 @RequestMapping("/user") //接口的路由
 public class UserController {
 
+  String currentTruckInfo = "";
+
   @Resource
   UserMapper userMapper; //一般会写一个service类，control引入service， service引入mapper
 
@@ -232,10 +234,16 @@ public class UserController {
     return Result.success();
   }
 
+  @GetMapping("/updateCurrentTruck")
+  public String updateCurrentTrucks(){
+    System.out.print("============"+currentTruckInfo);
+    return currentTruckInfo;
+  }
+
   @GetMapping("/updateCurrentTruck/{total}/{currentTruckID}")
   public Result<?> updateCurrentTruck(@PathVariable int total, @PathVariable int currentTruckID)   { //前台传过来的对象映射成实体
     //copylatestfiles();
-    String trkno = "truck", despatchTime = "";
+    String trkno = "truck", despatchTime = "", batchName="";
     double thisload = 0.0, loadQual = 0.0;
     int curTruckNum =0, isMatched = 0;
     User user = new User();
@@ -258,6 +266,7 @@ public class UserController {
             System.out.println(childNodes.item(j).getFirstChild().getNodeValue());
             if(num==2)trkno = childNodes.item(j).getFirstChild().getNodeValue().toString();
             if(num==3)despatchTime = childNodes.item(j).getFirstChild().getNodeValue().toString();
+            if(num==5)batchName = childNodes.item(j).getFirstChild().getNodeValue().toString();
             if(num==6)thisload = Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue());
             if(num==7)loadQual = Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue());
 
@@ -265,6 +274,7 @@ public class UserController {
             num++;
           }
         }
+        currentTruckInfo = "CurrentTK,"+trkno.toString()+","+batchName.toString()+","+thisload+","+loadQual;
       }
 
     }catch(Exception e){

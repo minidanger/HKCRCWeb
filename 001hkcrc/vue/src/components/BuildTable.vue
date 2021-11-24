@@ -238,6 +238,7 @@ export default {
   created(){
     this.load()
     this.loadList()
+    this.initWebSocket();
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
     },1000* 1)
@@ -344,6 +345,9 @@ export default {
       console.log("failed to get 'ShowCummulatedqty'")
     }
   },
+  destroyed() {
+    this.websock.close() //离开路由之后断开websocket连接
+  },
   components: {
     Aside,
     Footer,
@@ -376,15 +380,8 @@ export default {
         this.tableData = res.data.records
         this.total = res.data.total
       })
+      //this.websocketsend("qw");
 
-    },
-    onPen(){},
-    WebSocketTest(){
-      let gateway = `ws://${window.location.hostname}/ws`
-      let websocket = new WebSocket(gateway)
-      websocket.onopen = onOpen
-      websocket.onclose = onClose
-      websocket.onmessage = onMessage
     },
     GetAllSiteByString(){
       request.get("/api/user", {
@@ -598,7 +595,32 @@ export default {
         })
       }
       // 数据交互的API， axios, fetch
-    }
+    },
+
+    initWebSocket(){ //初始化weosocket
+      const wsuri = "ws://192.168.10.24:8080";
+      this.websock = new WebSocket('ws://localhost:9876');
+      this.websock.onmessage = this.websocketonmessage;
+      this.websock.onopen = this.websocketonopen;
+      this.websock.onerror = this.websocketonerror;
+      this.websock.onclose = this.websocketclose;
+    },
+    websocketonopen(){ //连接建立之后执行send方法发送数据
+      let actions = {"test":"12345"};
+      this.websocketsend(JSON.stringify(actions));
+    },
+    websocketonerror(){//连接建立失败重连
+      this.initWebSocket();
+    },
+    websocketonmessage(e){ //数据接收
+      const redata = JSON.parse(e.data);
+    },
+    websocketsend(Data){//数据发送
+      this.websock.send(Data);
+    },
+    websocketclose(e){  //关闭
+      console.log('断开连接',e);
+    },
   },
   data () {
     return {
@@ -613,6 +635,9 @@ export default {
       ShowThisLoad:true,
       ShowCummulatedqty:false,
       SelectedSite:"",
+
+      websock: null,
+
       form: {},
       filename:'',
       dialogVisible: false,
@@ -621,15 +646,7 @@ export default {
       total: 1,
       currentPage: 1,
       pageSize: 8,
-      tableData: [],
-      tableData1: [{
-        id: '1',
-        username: '王小虎',
-        nickName: '小王',
-        age: 12,
-        sex: '男',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }]
+      tableData: []
     }
   }
 }

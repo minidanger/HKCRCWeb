@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,29 @@ public class ESP32Controller {
 
 
         return "TP2390P";
+
+    }
+
+    /**
+     *
+     * @param
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping (value = "/ESP32Sensors/{SensorsValue}", method = {RequestMethod.GET, RequestMethod.POST})
+    public int weather(ModelAndView model, @PathVariable String SensorsValue){
+        System.out.println("传感器值："+SensorsValue);
+        //System.out.println("湿度为："+newDeviceID1);
+//        Map<String, Object> WeatherMap = new HashMap<~>();
+//        WeatherMap.put("10001",temperature);
+//        WeatherMap.put("10002",humidity);
+        //weather.WeatherSource(WeatherMap);
+        //model.setViewName("main/STM32");
+        String[] sensorsValue = SensorsValue.split(",");
+
+        if(sensorsValue.length!=4) return 1;
+
+        return 0;
 
     }
 
