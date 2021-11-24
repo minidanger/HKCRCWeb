@@ -66,7 +66,8 @@ public class UserController {
   @GetMapping
   public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                             @RequestParam(defaultValue = "10") Integer pageSize,
-                            @RequestParam(defaultValue = "") String search) throws Exception {
+                            @RequestParam(defaultValue = "") String search,
+                            @RequestParam(defaultValue = "") String site) throws Exception {
     if(search.equalsIgnoreCase("o") )
     {
 
@@ -94,12 +95,19 @@ public class UserController {
 
     if(!StrUtil.isNotBlank(search))
     {
-      LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
-      Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+//      LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
+//      Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+//      return Result.success(userPage);
+      QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+      //queryWrapper.like("docketno", search); //屯門兆康 TMTL483
+      queryWrapper.like("sitename", site); //屯門兆康 TMTL483
+      //List<User> users = userMapper.selectList(queryWrapper);
+      Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize),queryWrapper);
       return Result.success(userPage);
     }else{
       QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-      queryWrapper.like("docketno", search);
+      queryWrapper.like("docketno", search); //屯門兆康 TMTL483
+      queryWrapper.like("sitename", site); //屯門兆康 TMTL483
       //List<User> users = userMapper.selectList(queryWrapper);
       Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize),queryWrapper);
       return Result.success(userPage);

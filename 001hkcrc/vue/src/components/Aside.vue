@@ -14,14 +14,17 @@
             <el-menu-item index="buildTable">车辆监测</el-menu-item>
             <el-menu-item index="book">安全帽</el-menu-item>
         </el-sub-menu>
+
+
         <el-sub-menu index="2" style="width: 100%" class="asideSlot">
           <template #title>
             <i class="el-icon-menu"></i>
             <span>MIX</span>
           </template>
-          <el-menu-item index="buildTable">45D/20/125PFA+WP+TC30</el-menu-item>
-          <el-menu-item index="book">45D/20/125PFA+WP+TC20</el-menu-item>
+          <el-menu-item v-for="(item, i) in MIXItems" @click="handleMIXItemsClick(i)">{{this.MIXItems[i]}}</el-menu-item>
         </el-sub-menu>
+
+
         <el-sub-menu index="3" style="width: 100%" class="asideSlot">
           <template #title>
             <i class="el-icon-document"></i>
@@ -46,12 +49,36 @@
 
 <script>
 export default {
+  data(){
+    return {
+      MIXItems:['aaa','bbb'],
+      MIXItemsString: "",
+    }
+  },
+  mounted() {
+    this.timer = setInterval(()=>{
+
+      try {
+        this.MIXItemsString = sessionStorage.getItem('allSiteListStringFormat')
+        //let ss = this.MIXItemsValue.substr(1, this.MIXItemsValue.length - 2)
+        //this.MIXItemsValue = ss
+      }catch{}
+
+      this.MIXItems = this.MIXItemsString.substr(1,this.MIXItemsString.length-2).split(",")
+      console.log(this.MIXItems)
+
+    },1000)
+  },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    handleMIXItemsClick(i){
+      console.log(this.MIXItems[i])
+      sessionStorage.setItem("MIXItemsValue",JSON.stringify(this.MIXItems[i]))
     }
   }
 }

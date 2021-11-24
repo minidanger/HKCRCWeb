@@ -1,11 +1,15 @@
 <!--suppress ALL -->
 <template>
-  <div style = "height:100%; line-height:80%; border-bottom: 1px solid red; display:flex">
+  <div style = "height:100%;  border-bottom: 1px solid red; display:flex">
     <div style="height:100%; width:40%">
       <img src="../assets/img/xhj1.png" alt="" style="height:100%; width:50%">
     </div>
 
-    <div id="clock" style="width:30%; margin-top:6%; color:#8d91ff">{{date}}</div>
+    <div id="clock" style="width:30%; margin-top:3%; color:#8d91ff">
+      <p6 style="font-weight: 700">Site: {{MIXItemsValue}}</p6>
+    </div>
+
+    <div id="clock" style="width:30%; margin-top:3%; color:#8d91ff">{{ date }}</div>
 
     <div style="flex:1"></div>
 
@@ -30,7 +34,8 @@ export default {
   data () {
     return {
       //date: new Date()
-      date: String(new Date())
+      date: String(new Date()),
+      MIXItemsValue: ''
     }
   },
   mounted(){
@@ -50,8 +55,16 @@ export default {
       var wk = time.getDay();
       let dayth = String(weeks[wk]);
       this.date = dayth+' '+mm+' '+dd+' '+ yy +','+ hou +':'+min+':'+sec;
+
+      try {
+        this.MIXItemsValue = sessionStorage.getItem('MIXItemsValue')
+        let ss = this.MIXItemsValue.substr(1, this.MIXItemsValue.length - 2)
+        this.MIXItemsValue = ss
+        //console.log(this.MIXItemsValue)
+      }catch{}
     },1000)
   },
+
   beforeDestroy() {
     if(this.timer){
       clearInterval(this.timer);

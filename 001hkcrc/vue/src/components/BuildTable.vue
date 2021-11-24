@@ -352,28 +352,94 @@ export default {
   methods: {
 
     load(){
+      let aa = sessionStorage.getItem('MIXItemsValue')
+      let ss=aa
+      if(aa != null)
+      {
+        ss = aa.substr(1, aa.length - 2)
+        this.SelectedSite = ss
+      }
+      //let ss = aa.substr(1, this.MIXItemsValue.length - 2)
+      //this.MIXItemsValue = ss
+      console.log("========================",ss)
+
       request.get("/api/user", {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          search: this.search
+          search: this.search,
+          site:this.SelectedSite
         }
       }).then(res => {
-        console.log()
+        console.log("-------------------load: ")
+        console.log(res.data.records)
         this.tableData = res.data.records
         this.total = res.data.total
       })
 
     },
+    onPen(){},
+    WebSocketTest(){
+      let gateway = `ws://${window.location.hostname}/ws`
+      let websocket = new WebSocket(gateway)
+      websocket.onopen = onOpen
+      websocket.onclose = onClose
+      websocket.onmessage = onMessage
+    },
+    GetAllSiteByString(){
+      request.get("/api/user", {
+        params: {
+          pageNum: 1,
+          pageSize: 10000,
+          search: '',
+          site:''
+        }
+      }).then(res => {
+        //console.log("all data: ")
+        //console.log(res.data.records)
+        let allSiteList = [], num = 0
+        for( let i=0;i<res.data.records.length;i++)
+        {
+          if(allSiteList.length==0)allSiteList.push(res.data.records[i].sitename);
+          for(let j=0;j<allSiteList.length;j++)
+          {
+            //console.log(i,res.data.records[i].sitename,j,allSiteList[i])
+            if(res.data.records[i].sitename == allSiteList[j])
+            {
+              //console.log("already have")
+              break;
+            }
+            if(j==allSiteList.length-1)
+            {
+              allSiteList.push(res.data.records[i].sitename);
+              break;
+            }
+          }
+        }
+
+        let allSiteListStringFormat = "";
+        if(allSiteList.length>0) {
+          allSiteListStringFormat = String(allSiteList[0])
+          for (let i = 1; i < allSiteList.length; i++) {
+            allSiteListStringFormat = allSiteListStringFormat + ","+String(allSiteList[i])
+          }
+        }
+        console.log("allSiteListStringFormat===",allSiteListStringFormat)
+
+        sessionStorage.setItem("allSiteListStringFormat",JSON.stringify(allSiteListStringFormat))
+
+      })
+
+    },
     filesUploadSucces(res){
-      console.log(res)
+      //console.log(res)
     },
     tableRowClassName ({row, rowIndex}) {
       //console.log(row, rowIndex);
       let styleJoson = {};
 
       if(row.id === this.currentTrcukID ){
-        console.log("The Current Truck ID is: "+this.currentTrcukID)
+        //console.log("The Current Truck ID is: "+this.currentTrcukID)
         styleJoson.color = 'blue';
         // styleJoson.background = "#66ccff";
         styleJoson.backgroundColor = "##F1D0FB";
@@ -424,7 +490,7 @@ export default {
     updateCurrentTruck(){
       if(this.currentTrcukID==null)this.currentTrcukID=0;
       request.get("/api/user/updateCurrentTruck/"+this.total+"/"+this.currentTrcukID).then(res => { //es6语法
-        console.log(res)
+        //console.log(res)
         if(res.code ==='0' && res.data.id != null && res.data.id != 0)
         {
           // this.$message({
@@ -453,7 +519,7 @@ export default {
     loadList(){
       console.log("start load list")
       request.post("/api/user/loadlist/"+this.total).then(res => { //es6语法
-        console.log(res)
+        //console.log("loadList: "+res.data)
         if(res.code ==='0' )
         {
           this.$message({
@@ -466,6 +532,7 @@ export default {
             message: res.msg
           })
         }
+        this.GetAllSiteByString();
         this.load();
         this.dialogVisible = false
       })
@@ -545,6 +612,7 @@ export default {
       ShowBatchName:false,
       ShowThisLoad:true,
       ShowCummulatedqty:false,
+      SelectedSite:"",
       form: {},
       filename:'',
       dialogVisible: false,
