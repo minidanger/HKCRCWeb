@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 //import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -25,6 +28,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
@@ -38,6 +42,7 @@ import java.util.Properties;
 public class UserController {
 
   String currentTruckInfo = "";
+  String ESP32Data = "";
 
   @Resource
   UserMapper userMapper; //一般会写一个service类，control引入service， service引入mapper
@@ -49,6 +54,24 @@ public class UserController {
       return Result.error("-1", "用户名或密码错误");
     }
     return Result.success();
+  }
+
+  @PostMapping("/logins/{info}")
+  public String updateCurrentTrucks22(@PathVariable String info){
+    System.out.print("============"+info);
+
+    return currentTruckInfo;
+  }
+
+  @PostMapping("/uploadfile")
+  public Result<?> upload2(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
+    String originalFilename = file.getOriginalFilename();
+    //定义文件的唯一标识
+    String flag = IdUtil.fastSimpleUUID();
+    //String rootFilePath =  System.getProperty("user.dir") + "/springboot/src/main/resource/files/"+flag+"_"+originalFilename;
+    String rootFilePath =  System.getProperty("user.dir") +"/"+originalFilename;
+    FileUtil.writeBytes(file.getBytes(),rootFilePath);
+    return Result.success("/files/"+flag);
   }
 
   @PostMapping
@@ -234,10 +257,24 @@ public class UserController {
     return Result.success();
   }
 
+  @GetMapping("/updateESP32data")
+  public String updateESP32Data(){
+    //System.out.print("============"+info);
+    ESP32Data = "a";
+    return currentTruckInfo;
+  }
+
+  @GetMapping("/updateESP32data/{info}")
+  public String updateESP32Data(@PathVariable String info){
+    System.out.print("============"+info);
+    ESP32Data = info;
+    return currentTruckInfo;
+  }
+
   @GetMapping("/updateCurrentTruck")
   public String updateCurrentTrucks(){
     System.out.print("============"+currentTruckInfo);
-    return currentTruckInfo;
+    return "ESP32Data"+ESP32Data;
   }
 
   @GetMapping("/updateCurrentTruck/{total}/{currentTruckID}")

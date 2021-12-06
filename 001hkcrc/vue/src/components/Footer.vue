@@ -1,28 +1,52 @@
 <template>
   <div style = "height:100%; border-bottom: 1px solid red; display:flex">
     <div id = "camera">
-      <img src="../assets/img/camera.jpg"  alt="../assets/img/camera1.jpg">
+      <img :src="this.image1" />
     </div>
 
     <div id = "zoonin">
-      <img src="../assets/img/zoonin.jpg" alt="12" style="height:100%; width:100%">
+      <img src="zoonin.jpg" alt="zoonin1.jpg" style="height:100%; width:100%">
     </div>
 
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'Footer',
-  computed:{
-    getNavImgUrl:function(){
-      return '../'+'assets/img/camera.jpg'
-    }
-  },
   data(){
     return{
-      image1:"../assets/img/camera.jpg"
+      image1:"../webfiles/camera.jpg",
+      numTest:1
     }
+  },
+  computed:{
+    // getNavImgUrl:function(){
+    //   return 'camera.jpg'
+    // }
+    //this.image1 = ""
+  },
+
+  created(){
+    this.timer = setInterval(() =>{
+      this.updateEx()
+    },1000* 1)
+  },
+  methods:{
+    updateEx(){
+      if(this.numTest==1)
+      {
+        this.image1 = "../webfiles/camera.jpg"
+        this.numTest=2
+      }else {
+        this.image1 = "../webfiles/camera1.jpg"
+        this.numTest=1
+      }
+
+      console.log("====Update camera====",this.image1, this.numTest)
+    },
+
   }
 }
 </script>
@@ -45,3 +69,4 @@ export default {
     width:30%
   }
 </style>
+

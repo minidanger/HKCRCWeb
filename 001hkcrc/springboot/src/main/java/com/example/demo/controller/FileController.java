@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -31,14 +32,27 @@ public class FileController {
      * @return
      * @throws IOException
      */
+    //@CrossOrigin(origins = "http://localhost:9090")
     @PostMapping("upload")
     public Result<?> upload(MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
         //定义文件的唯一标识
         String flag = IdUtil.fastSimpleUUID();
-        String rootFilePath =  System.getProperty("user.dir") + "/springboot/src/main/resource/files/"+flag+"_"+originalFilename;
+        //String rootFilePath =  System.getProperty("user.dir") + "/springboot/src/main/resource/files/"+flag+"_"+originalFilename;
+        String rootFilePath =  System.getProperty("user.dir") +"/"+originalFilename;
         FileUtil.writeBytes(file.getBytes(),rootFilePath);
         return Result.success(ip+":"+port+"/files/"+flag);
+    }
+
+    @PostMapping("/uploadfile")
+    public Result<?> upload2(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
+        String originalFilename = file.getOriginalFilename();
+        //定义文件的唯一标识
+        String flag = IdUtil.fastSimpleUUID();
+        //String rootFilePath =  System.getProperty("user.dir") + "/springboot/src/main/resource/files/"+flag+"_"+originalFilename;
+        String rootFilePath =  "../files/"+System.getProperty("user.dir") +"/"+originalFilename;
+        FileUtil.writeBytes(file.getBytes(),rootFilePath);
+        return Result.success("/files/"+flag);
     }
 
     /**

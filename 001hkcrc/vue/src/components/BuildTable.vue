@@ -1,10 +1,19 @@
 <template>
   <div style="padding: 0px">
     <div id="buttons" >
-      <el-button size="mini" type="primary" @click="add" style="width: 23%">新增</el-button>
-      <el-button size="mini" type="primary" @click="loadList" style="width: 32%">重新导入</el-button>
-      <el-button size="mini" type="primary" @click="deleteList" style="width: 32%">清除列表</el-button>
+
+      <el-button size="mini" type="primary" @click="add" style="width: 18%">新增</el-button>
+
+      <el-button size="mini" type="primary" @click="loadList" style="width: 25%">重新导入</el-button>
+      <el-button size="mini" type="primary" @click="deleteList" style="width: 25%">清除列表</el-button>
+
 <!--      <el-button @click = "updateCurrentTruck">test</el-button>-->
+    </div>
+
+    <div id="uploadfile">
+      <el-upload action="http://localhost:9090/files/upload" :on-sucess="filesUploadSucces">
+        <el-button type="primary">文件上传</el-button>
+      </el-upload>
     </div>
 
     <div id="search" >
@@ -106,34 +115,34 @@
       <Footer />
     </div>
 
-    <el-dialog title="新增信息" v-model="dialogVisible" width="30%">
+    <el-dialog title="新增信息" v-model="dialogVisible" width="50%">
       <el-form :model="form"  label-width="120px">
         <el-form-item label="序列号">
-          <el-input v-model="form.docketno" style="width: 80%"></el-input>
+          <el-input v-model="form.docketno" style="width: 60%;"></el-input>
         </el-form-item>
         <el-form-item label="地点">
-          <el-input v-model="form.sitename" style="width: 80%"></el-input>
+          <el-input v-model="form.sitename" style="width: 60%;"></el-input>
         </el-form-item>
         <el-form-item label="地点2">
-          <el-input v-model="form.location" style="width: 80%"></el-input>
+          <el-input v-model="form.location" style="width: 60%"></el-input>
         </el-form-item>
         <el-form-item label="车牌号码">
-          <el-input v-model="form.trucknumber" style="width: 80%"></el-input>
+          <el-input v-model="form.trucknumber" style="width: 60%"></el-input>
         </el-form-item>
-        <el-form-item label="离槽时间">
-          <el-input v-model="form.despatchtime" style="width: 80%"></el-input>
-        </el-form-item>
-        <el-form-item label="到达时间">
-          <el-input v-model="form.arrivaltime" style="width: 80%"></el-input>
-        </el-form-item>
+<!--        <el-form-item label="离槽时间">-->
+<!--          <el-input v-model="form.despatchtime" style="width: 60%"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="到达时间">-->
+<!--          <el-input v-model="form.arrivaltime" style="width: 60%"></el-input>-->
+<!--        </el-form-item>-->
         <el-form-item label="槽点2">
-          <el-input v-model="form.batchname" style="width: 80%"></el-input>
+          <el-input v-model="form.batchname" style="width: 60%"></el-input>
         </el-form-item>
         <el-form-item label="载重">
-          <el-input v-model="form.thisload" style="width: 80%"></el-input>
+          <el-input v-model="form.thisload" style="width: 60%"></el-input>
         </el-form-item>
         <el-form-item label="总重">
-          <el-input v-model="form.cummulatedqty" style="width: 80%"></el-input>
+          <el-input v-model="form.cummulatedqty" style="width: 60%"></el-input>
         </el-form-item>
         <el-form-item label="封面">
           <el-upload action="http://localhost:9090/files/upload" :on-sucess="filesUploadSucces">
@@ -170,6 +179,15 @@
   top: 0;  /* 距离上面50像素 */
   left: 40%;
   height: 8%;
+  width: 55%;
+  overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
+  background-color: #fff9ea;
+}
+#uploadfile{
+  position: absolute;
+  top: 0;  /* 距离上面50像素 */
+  left: 85%;
+  height: 4%;
   width: 55%;
   overflow-y: hidden; /* 当内容过多时y轴出现滚动条 */
   background-color: #fff9ea;
@@ -365,7 +383,6 @@ export default {
       }
       //let ss = aa.substr(1, this.MIXItemsValue.length - 2)
       //this.MIXItemsValue = ss
-      console.log("========================",ss)
 
       request.get("/api/user", {
         params: {
@@ -429,7 +446,9 @@ export default {
 
     },
     filesUploadSucces(res){
-      //console.log(res)
+      console.log("=========================File upload sucess--=================")
+      console.log(res)
+      console.log("--===========================================File upload sucess")
     },
     tableRowClassName ({row, rowIndex}) {
       //console.log(row, rowIndex);
@@ -510,8 +529,16 @@ export default {
         }
 
         this.load();
-        this.dialogVisible = false
+        //this.dialogVisible = false
       })
+
+      // request.get("/api/user/updateCurrentTruck").then(res => { //es6语法
+      //   console.log("Get ESP32Data:-->")
+      //   console.log(res)
+      //   console.log("Get ESP32Data:done.")
+      //
+      //   //this.dialogVisible = false
+      // })
     },
     loadList(){
       console.log("start load list")
@@ -598,22 +625,27 @@ export default {
     },
 
     initWebSocket(){ //初始化weosocket
-      const wsuri = "ws://192.168.10.24:8080";
-      this.websock = new WebSocket('ws://localhost:9876');
+      const wsuri = "ws://192.168.10.24:10000";
+      console.log("--------------initWebSocket---------")
+      //this.websock = new WebSocket('ws://192.168.10.13:9876');
+      this.websock = new WebSocket('ws://192.168.10.13:9876');
       this.websock.onmessage = this.websocketonmessage;
       this.websock.onopen = this.websocketonopen;
       this.websock.onerror = this.websocketonerror;
-      this.websock.onclose = this.websocketclose;
+      //this.websock.onclose = this.websocketclose;
     },
     websocketonopen(){ //连接建立之后执行send方法发送数据
       let actions = {"test":"12345"};
       this.websocketsend(JSON.stringify(actions));
+      console.log("Open sucess")
     },
     websocketonerror(){//连接建立失败重连
       this.initWebSocket();
     },
     websocketonmessage(e){ //数据接收
       const redata = JSON.parse(e.data);
+      console.log("=================---------redata-----------==============");
+      console.log(redata)
     },
     websocketsend(Data){//数据发送
       this.websock.send(Data);
