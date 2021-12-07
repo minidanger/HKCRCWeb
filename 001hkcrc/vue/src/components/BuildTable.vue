@@ -377,11 +377,17 @@ export default {
       console.log("load")
       let aa = sessionStorage.getItem('MIXItemsValue')
       let ss=aa
-      if(aa != null)
+      //if(aa.indexOf("All")>0||aa.endsWith("All"))aa="";
+
+      if(aa != null && aa.indexOf("All")==-1 && aa!=="All")
       {
         ss = aa.substr(1, aa.length - 2)
         this.SelectedSite = ss
       }
+      else{
+        this.SelectedSite = ""
+      }
+      console.log("===================aa=b======================",this.SelectedSite)
       //let ss = aa.substr(1, this.MIXItemsValue.length - 2)
       //this.MIXItemsValue = ss
 
@@ -440,6 +446,7 @@ export default {
             allSiteListStringFormat = allSiteListStringFormat + ","+String(allSiteList[i])
           }
         }
+        allSiteListStringFormat = allSiteListStringFormat+", All"
         console.log("allSiteListStringFormat===",allSiteListStringFormat)
 
         sessionStorage.setItem("allSiteListStringFormat",JSON.stringify(allSiteListStringFormat))

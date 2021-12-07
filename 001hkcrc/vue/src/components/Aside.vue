@@ -51,7 +51,7 @@
 export default {
   data(){
     return {
-      MIXItems:['aaa','bbb'],
+      MIXItems:['All'],
       MIXItemsString: "",
     }
   },
