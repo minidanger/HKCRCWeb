@@ -182,9 +182,10 @@ public class UserController {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     System.out.print("======================================");
     try {
+      //https://dds.glorious.com.hk/gdds/dktGetByTrk.dds?trk=PC2865
       DocumentBuilder builder = factory.newDocumentBuilder();
       //Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetByTrk.xml");
-      Document d = builder.parse("dktGetByTrk.xml");
+      Document d = builder.parse("https://dds.glorious.com.hk/gdds/dktGetByTrk.dds?trk=PC2865");//"dktGetByTrk.xml"
       NodeList sList = d.getElementsByTagName("dockets");
 
       int validData=0;
@@ -274,7 +275,7 @@ public class UserController {
   @GetMapping("/updateCurrentTruck")
   public String updateCurrentTrucks(){
     System.out.print("============"+currentTruckInfo);
-    return "ESP32Data"+ESP32Data;
+    return currentTruckInfo;
   }
 
   @GetMapping("/updateCurrentTruck/{total}/{currentTruckID}")
@@ -302,16 +303,16 @@ public class UserController {
             System.out.print(childNodes.item(j).getNodeName() + ":");
             System.out.println(childNodes.item(j).getFirstChild().getNodeValue());
             if(num==2)trkno = childNodes.item(j).getFirstChild().getNodeValue().toString();
-            if(num==3)despatchTime = childNodes.item(j).getFirstChild().getNodeValue().toString();
-            if(num==5)batchName = childNodes.item(j).getFirstChild().getNodeValue().toString();
-            if(num==6)thisload = Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue());
-            if(num==7)loadQual = Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue());
+            //if(num==3)despatchTime = childNodes.item(j).getFirstChild().getNodeValue().toString();
+            //if(num==5)batchName = childNodes.item(j).getFirstChild().getNodeValue().toString();
+            //if(num==6)thisload = Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue());
+            //if(num==7)loadQual = Double.valueOf(childNodes.item(j).getFirstChild().getNodeValue());
 
             //else continue;
             num++;
           }
         }
-        currentTruckInfo = "CurrentTK,"+trkno.toString()+","+batchName.toString()+","+thisload+","+loadQual;
+        //currentTruckInfo = "CurrentTK,"+trkno.toString()+","+batchName.toString()+","+thisload+","+loadQual;
       }
 
     }catch(Exception e){
@@ -329,6 +330,8 @@ public class UserController {
             curTruckNum = user2.getNum();
             user = user2;
             isMatched = 1;
+            batchName = user2.getBatchname(); thisload = user2.getThisload();loadQual=user2.getCummulatedqty();
+            currentTruckInfo = "CurrentTK,"+trkno.toString()+","+batchName.toString()+","+thisload+","+loadQual;
           }
         }
       }catch(Exception e){

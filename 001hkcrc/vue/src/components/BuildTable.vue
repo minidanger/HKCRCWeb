@@ -256,10 +256,10 @@ export default {
   created(){
     this.load()
     this.loadList()
-    this.initWebSocket();
+    //this.initWebSocket();
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
-    },1000* 1)
+    },5000* 1)
 
     try{
       if (sessionStorage.getItem("ShowID") == String(true)) {
@@ -374,6 +374,7 @@ export default {
   methods: {
 
     load(){
+      console.log("load")
       let aa = sessionStorage.getItem('MIXItemsValue')
       let ss=aa
       if(aa != null)
@@ -398,6 +399,7 @@ export default {
         this.total = res.data.total
       })
       //this.websocketsend("qw");
+      console.log("load done")
 
     },
     GetAllSiteByString(){
@@ -446,9 +448,9 @@ export default {
 
     },
     filesUploadSucces(res){
-      console.log("=========================File upload sucess--=================")
-      console.log(res)
-      console.log("--===========================================File upload sucess")
+      //console.log("=========================File upload sucess--=================")
+      //console.log(res)
+      //console.log("--===========================================File upload sucess")
     },
     tableRowClassName ({row, rowIndex}) {
       //console.log(row, rowIndex);
@@ -504,6 +506,7 @@ export default {
       this.form = {}
     },
     updateCurrentTruck(){
+      console.log("update truck")
       if(this.currentTrcukID==null)this.currentTrcukID=0;
       request.get("/api/user/updateCurrentTruck/"+this.total+"/"+this.currentTrcukID).then(res => { //es6语法
         //console.log(res)
@@ -531,7 +534,7 @@ export default {
         this.load();
         //this.dialogVisible = false
       })
-
+      console.log("update truck done")
       // request.get("/api/user/updateCurrentTruck").then(res => { //es6语法
       //   console.log("Get ESP32Data:-->")
       //   console.log(res)
@@ -625,14 +628,14 @@ export default {
     },
 
     initWebSocket(){ //初始化weosocket
-      const wsuri = "ws://192.168.10.24:10000";
-      console.log("--------------initWebSocket---------")
-      //this.websock = new WebSocket('ws://192.168.10.13:9876');
-      this.websock = new WebSocket('ws://192.168.10.13:9876');
-      this.websock.onmessage = this.websocketonmessage;
-      this.websock.onopen = this.websocketonopen;
-      this.websock.onerror = this.websocketonerror;
-      //this.websock.onclose = this.websocketclose;
+      // const wsuri = "ws://192.168.10.24:10000";
+      // console.log("--------------initWebSocket---------")
+      // //this.websock = new WebSocket('ws://192.168.10.13:9876');
+      // this.websock = new WebSocket('ws://192.168.10.13:9876');
+      // this.websock.onmessage = this.websocketonmessage;
+      // this.websock.onopen = this.websocketonopen;
+      // this.websock.onerror = this.websocketonerror;
+      // //this.websock.onclose = this.websocketclose;
     },
     websocketonopen(){ //连接建立之后执行send方法发送数据
       let actions = {"test":"12345"};

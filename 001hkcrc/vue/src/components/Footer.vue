@@ -1,11 +1,11 @@
 <template>
   <div style = "height:100%; border-bottom: 1px solid red; display:flex">
     <div id = "camera">
-      <img :src="this.image1" />
+      <img src="..\assets\img\camera.jpg" alt="C:\Software\IDEA_Projects\GIT\001hkcrc\vue\src\assets\img\camera.jpg" />
     </div>
 
     <div id = "zoonin">
-      <img src="zoonin.jpg" alt="zoonin1.jpg" style="height:100%; width:100%">
+      <img src="..\assets\img\zoonin.jpg" alt="zoonin1.jpg" style="height:100%; width:100%">
     </div>
 
   </div>
@@ -29,9 +29,9 @@ export default {
   },
 
   created(){
-    this.timer = setInterval(() =>{
-      this.updateEx()
-    },1000* 1)
+    // this.timer = setInterval(() =>{
+    //   //this.updateEx()
+    // },1000* 1)
   },
   methods:{
     updateEx(){
