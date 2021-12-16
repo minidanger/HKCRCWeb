@@ -41,8 +41,8 @@ import java.util.Properties;
 @RequestMapping("/user") //接口的路由
 public class UserController {
 
-  String currentTruckInfo = "";
-  String ESP32Data = "";
+  String currentTruckInfo = "None";
+  String ESP32Data = "notupdate";
 
   @Resource
   UserMapper userMapper; //一般会写一个service类，control引入service， service引入mapper
@@ -185,7 +185,8 @@ public class UserController {
       //https://dds.glorious.com.hk/gdds/dktGetByTrk.dds?trk=PC2865
       DocumentBuilder builder = factory.newDocumentBuilder();
       //Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetByTrk.xml");
-      Document d = builder.parse("https://dds.glorious.com.hk/gdds/dktGetByTrk.dds?trk=PC2865");//"dktGetByTrk.xml"
+      Document d = builder.parse("dktGetByTrk.xml");
+      //Document d = builder.parse("https://dds.glorious.com.hk/gdds/dktGetByTrk.dds?trk=PC2865");//"dktGetByTrk.xml"
       NodeList sList = d.getElementsByTagName("dockets");
 
       int validData=0;
@@ -258,24 +259,27 @@ public class UserController {
     return Result.success();
   }
 
-  @GetMapping("/updateESP32data")
-  public String updateESP32Data(){
-    //System.out.print("============"+info);
-    ESP32Data = "a";
-    return currentTruckInfo;
-  }
+//  @GetMapping("/updateESP32data")
+//  public String updateESP32Data(){
+//    //System.out.print("============"+info);
+//    ESP32Data = "a";
+//    return currentTruckInfo;
+//  }
 
   @GetMapping("/updateESP32data/{info}")
   public String updateESP32Data(@PathVariable String info){
     System.out.print("============"+info);
     ESP32Data = info;
-    return currentTruckInfo;
+    return ESP32Data;
   }
 
-  @GetMapping("/updateCurrentTruck")
-  public String updateCurrentTrucks(){
+  @GetMapping("/GetCurrentTruckNO/{total}/{currentTruckID}")
+  public Result<?> updateCurrentTrucks(@PathVariable int total,@PathVariable String currentTruckID){
     System.out.print("============"+currentTruckInfo);
-    return currentTruckInfo;
+    User user = new User();
+    user.setDocketno(ESP32Data);
+
+    return Result.success(user);
   }
 
   @GetMapping("/updateCurrentTruck/{total}/{currentTruckID}")

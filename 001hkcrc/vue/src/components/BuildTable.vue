@@ -259,6 +259,7 @@ export default {
     //this.initWebSocket();
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
+      this.GetCurrentTruck()
     },5000* 1)
 
     try{
@@ -516,7 +517,7 @@ export default {
       console.log("update truck")
       if(this.currentTrcukID==null)this.currentTrcukID=0;
       request.get("/api/user/updateCurrentTruck/"+this.total+"/"+this.currentTrcukID).then(res => { //es6语法
-        //console.log(res)
+        console.log(res)
         if(res.code ==='0' && res.data.id != null && res.data.id != 0)
         {
           // this.$message({
@@ -542,13 +543,18 @@ export default {
         //this.dialogVisible = false
       })
       console.log("update truck done")
-      // request.get("/api/user/updateCurrentTruck").then(res => { //es6语法
-      //   console.log("Get ESP32Data:-->")
-      //   console.log(res)
-      //   console.log("Get ESP32Data:done.")
-      //
-      //   //this.dialogVisible = false
-      // })
+    },
+    GetCurrentTruck(){
+      console.log("update truck  333")
+      if(this.currentTrcukID==null)this.currentTrcukID=0;
+      request.get("/api/user/GetCurrentTruckNO/"+this.total+"/"+this.currentTrcukID).then(res => { //es6语法
+        console.log("res:")
+        console.log(res.data.docketno)
+        console.log("---res:")
+
+
+      })
+      console.log("update truck done")
     },
     loadList(){
       console.log("start load list")

@@ -6,7 +6,7 @@
     </div>
 
     <div id="clock" style="width:30%; margin-top:3%; color:#8d91ff">
-      <p style="font-weight: 700">Site: {{MIXItemsValue}}</p>
+      <p style="font-weight: 700">(15/12)Site: {{MIXItemsValue}}</p>
     </div>
 
     <div id="clock" style="width:30%; margin-top:3%; color:#8d91ff">{{ date }}</div>
