@@ -41,7 +41,8 @@ import java.util.Properties;
 @RequestMapping("/user") //接口的路由
 public class UserController {
 
-  String currentTruckInfo = "None";
+  public static String currentTruckInfo= "None";
+
   String ESP32Data = "notupdate";
 
   @Resource
