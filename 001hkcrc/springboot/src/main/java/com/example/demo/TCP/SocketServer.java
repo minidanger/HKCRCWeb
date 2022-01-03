@@ -37,7 +37,7 @@ public class SocketServer {
         log.info("port: {}, {}", this.port, port);
         //serverSocket.set
         try {
-            serverSocket =  new ServerSocket(port == null ? this.port : port);
+            serverSocket =  new ServerSocket(this.port);
             //serverSocket =  new ServerSocket(this.port, 50, InetAddress.getByName("192.168.10.23"));
             //serverSocket =  new ServerSocket(this.port, 50, InetAddress.getLocalHost("192.168.10.23"));
             //serverSocket = new ServerSocket();

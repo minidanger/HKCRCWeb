@@ -255,12 +255,15 @@ export default {
   name: 'BuildTable',
   created(){
     this.load()
-    this.loadList()
+
     this.initWebSocket();
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
       this.GetCurrentTruck()
-    },5000* 1)
+    },1000* 5)
+    this.timer = setInterval(() =>{
+      this.loadList()
+    },1000* 60*5)
 
     try{
       if (sessionStorage.getItem("ShowID") == String(true)) {

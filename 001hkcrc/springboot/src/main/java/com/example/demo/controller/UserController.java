@@ -37,6 +37,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+
+@Slf4j
+@Data
+@Component
+@NoArgsConstructor
 @RestController //返回Json的Controller
 @RequestMapping("/user") //接口的路由
 public class UserController {
@@ -57,14 +67,14 @@ public class UserController {
     return Result.success();
   }
 
-  @PostMapping("/logins/{info}")
+  @PostMapping("/logins/{info}")//debug purpose
   public String updateCurrentTrucks22(@PathVariable String info){
     System.out.print("============"+info);
 
     return currentTruckInfo;
   }
 
-  @PostMapping("/uploadfile")
+  @PostMapping("/uploadfile")//upload file, like xml or jpg
   public Result<?> upload2(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
     String originalFilename = file.getOriginalFilename();
     //定义文件的唯一标识
@@ -180,18 +190,21 @@ public class UserController {
   @PostMapping("/loadlist/{id}")
   public Result<?> load(@PathVariable int id)   { //前台传过来的对象映射成实体
 
+    int dataNum = id;
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    System.out.print("======================================");
+    //System.out.print("==============LoadList========================");
+    log.info("==============LoadList========================");
     try {
       //https://dds.glorious.com.hk/gdds/dktGetByTrk.dds?trk=PC2865
       DocumentBuilder builder = factory.newDocumentBuilder();
       //Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetByTrk.xml");
-      Document d = builder.parse("dktGetByTrk.xml");
-      //Document d = builder.parse("https://dds.glorious.com.hk/gdds/dktGetByTrk.dds?trk=PC2865");//"dktGetByTrk.xml"
+      //Document d = builder.parse("dktGetByTrk.xml");
+      Document d = builder.parse("https://dds.glorious.com.hk/GDDS/dktBySIT.dds?sit=1728");//"dktGetByTrk.xml"
       NodeList sList = d.getElementsByTagName("dockets");
 
       int validData=0;
       if(id==0) id=1;
+      log.info("==============sList.getLength() = {}========================",sList.getLength());
       for (int i = 0; i <sList.getLength() ; i++) {
         Node node = sList.item(i);
         NodeList childNodes = node.getChildNodes();
@@ -247,10 +260,37 @@ public class UserController {
             else continue;
             user.setNum(id+i);
             user.setId(id+i);
+            log.info("i={}, id+i={}",i,id+i);
             num++;
           }
         }
-        userMapper.insert(user);
+        //userMapper.insert(user);
+        boolean isNew = true;
+        if(user!=null)
+        {
+          for(int j=0; j<dataNum; j++)
+          {
+            try{
+              User user2 = userMapper.selectById(i);
+              if(user2!=null) {
+                String truckDockNum = user2.getDocketno();
+                if (truckDockNum.equalsIgnoreCase(user.getDocketno()))
+                {
+                  log.info("Already have");
+                  isNew = false;
+                  break;
+                }
+              }
+            }catch(Exception e){
+
+            }
+          }
+          if(isNew){
+            log.info("===new====");
+            userMapper.insert(user);
+          }
+        }
+        //check if already
       }
 
     }catch(Exception e){
