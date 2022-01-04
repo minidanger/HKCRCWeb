@@ -202,13 +202,18 @@ public class UserController {
       Document d = builder.parse("https://dds.glorious.com.hk/GDDS/dktBySIT.dds?sit=1728");//"dktGetByTrk.xml"
       NodeList sList = d.getElementsByTagName("dockets");
 
-      int validData=0;
+
       if(id==0) id=1;
+      int insertNum=0;
+
       log.info("==============sList.getLength() = {}========================",sList.getLength());
       for (int i = 0; i <sList.getLength() ; i++) {
+        boolean isNew = true;
+
         Node node = sList.item(i);
         NodeList childNodes = node.getChildNodes();
         int num = 0;
+
         User user = new User();
         for (int j = 0; j <childNodes.getLength() ; j++) {
           if (childNodes.item(j).getNodeType()==Node.ELEMENT_NODE) {
@@ -258,25 +263,41 @@ public class UserController {
               }
             }
             else continue;
-            user.setNum(id+i);
-            user.setId(id+i);
-            log.info("i={}, id+i={}",i,id+i);
+
+            user.setNum(dataNum + insertNum +1);
+            user.setId(dataNum + insertNum +1);
+
+            log.info("ALREADY HAVE Truck dataNum ={}, Num of insertNum  ={}",dataNum,insertNum);
             num++;
+
           }
+
         }
         //userMapper.insert(user);
-        boolean isNew = true;
-        if(user!=null)
+        //check if already
+
+        if(user!=null && user.getTrucknumber()!=null && user.getTrucknumber()!="")
         {
-          for(int j=0; j<dataNum; j++)
+          for(int m=1; m<=dataNum; m++)
           {
             try{
-              User user2 = userMapper.selectById(i);
+              User user2 = userMapper.selectById(m);
               if(user2!=null) {
                 String truckDockNum = user2.getDocketno();
+                String despatchTime = user2.getDespatchtime();
+                String batchName = user2.getBatchname();
                 if (truckDockNum.equalsIgnoreCase(user.getDocketno()))
                 {
-                  log.info("Already have");
+                  if(!despatchTime.equalsIgnoreCase(user.getDespatchtime()) || !batchName.equalsIgnoreCase(user.getDespatchtime()))
+                  {
+                    user2.setDespatchtime(user.getDespatchtime());
+                    user2.setThisload(user.getThisload());
+                    user2.setCummulatedqty(user.getCummulatedqty());
+                    user2.setBatchname(user.getBatchname());
+                    userMapper.updateById(user2);
+                    log.info("update user {}",user2.getDocketno());
+                  }
+                  log.info("Already have, docket={}",user2.getDocketno());
                   isNew = false;
                   break;
                 }
@@ -286,14 +307,16 @@ public class UserController {
             }
           }
           if(isNew){
-            log.info("===new====");
+            log.info("===new====and insert new user, dataNum = {}",dataNum);
+            insertNum++;
             userMapper.insert(user);
           }
         }
-        //check if already
+
       }
 
     }catch(Exception e){
+      log.info("error hapepend in load list, {}",e);
       e.printStackTrace();
     }
 
@@ -328,7 +351,7 @@ public class UserController {
     //copylatestfiles();
     String trkno = "truck", despatchTime = "", batchName="";
     double thisload = 0.0, loadQual = 0.0;
-    int curTruckNum =0, isMatched = 0;
+    int curTruckNum =0, isMatched = 0, curTruckID=0;
     User user = new User();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -373,6 +396,7 @@ public class UserController {
           if (truck.equalsIgnoreCase(trkno))
           {
             curTruckNum = user2.getNum();
+            curTruckID = i;
             user = user2;
             isMatched = 1;
             batchName = user2.getBatchname(); thisload = user2.getThisload();loadQual=user2.getCummulatedqty();
@@ -388,12 +412,12 @@ public class UserController {
       Date date = new Date(System.currentTimeMillis());
       String timer = formatter.format(date);
 
-      user.setDespatchtime(despatchTime);
-      user.setThisload(thisload);
-      user.setCummulatedqty(loadQual);
+      //user.setDespatchtime(despatchTime);
+      //user.setThisload(thisload);
+      //user.setCummulatedqty(loadQual);
       user.setArrivaltime(timer);
 
-      update(user);
+      userMapper.updateById(user);
     }
 
     return Result.success(user);

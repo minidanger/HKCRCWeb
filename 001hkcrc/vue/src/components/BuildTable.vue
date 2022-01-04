@@ -256,7 +256,7 @@ export default {
   created(){
     this.load()
 
-    this.initWebSocket();
+    //this.initWebSocket();
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
       this.GetCurrentTruck()
@@ -565,6 +565,8 @@ export default {
         //console.log("loadList: "+res.data)
         if(res.code ==='0' )
         {
+          //console.log("load list res----------------------:")
+          //console.log(res)
           this.$message({
             type: "success",
             message: "更新成功！"
@@ -644,13 +646,13 @@ export default {
     },
 
     initWebSocket(){ //初始化weosocket
-      //const wsuri = "ws://192.168.10.24:10000";
-      console.log("--------------initWebSocket---------")
-      //this.websock = new WebSocket('ws://192.168.10.13:9876');
-      this.websock = new WebSocket('ws://192.168.10.13:9876');
-      this.websock.onmessage = this.websocketonmessage;
-      this.websock.onopen = this.websocketonopen;
-      this.websock.onerror = this.websocketonerror;
+      // //const wsuri = "ws://192.168.10.24:10000";
+      // console.log("--------------initWebSocket---------")
+      // //this.websock = new WebSocket('ws://192.168.10.13:9876');
+      // this.websock = new WebSocket('ws://192.168.10.13:9876');
+      // this.websock.onmessage = this.websocketonmessage;
+      // this.websock.onopen = this.websocketonopen;
+      // this.websock.onerror = this.websocketonerror;
       //this.websock.onclose = this.websocketclose;
     },
     websocketonopen(){ //连接建立之后执行send方法发送数据
@@ -659,7 +661,7 @@ export default {
       console.log("Open sucess")
     },
     websocketonerror(){//连接建立失败重连
-      this.initWebSocket();
+      //this.initWebSocket();
     },
     websocketonmessage(e){ //数据接收
       const redata = JSON.parse(e.data);

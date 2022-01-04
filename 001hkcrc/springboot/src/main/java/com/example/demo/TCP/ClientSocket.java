@@ -31,6 +31,11 @@ public class ClientSocket implements Runnable {
                 log.info(LocalDateTime.now()+"接收到数据,Message: " + this.message);
                 //System.out.print("==========asassa=="+LocalDateTime.now()+"当前设备:"+this.key+" 接收到数据: <<<<<<" + this.message);
                 sendMessage(this, UserController.currentTruckInfo);
+                Thread.sleep(100);
+                sendMessage(this, UserController.currentTruckInfo);
+                Thread.sleep(100);
+                sendMessage(this, UserController.currentTruckInfo);
+                Thread.sleep(100);
             } catch (Exception e) {
                 e.printStackTrace();
             }
