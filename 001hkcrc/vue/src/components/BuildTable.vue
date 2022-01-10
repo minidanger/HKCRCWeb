@@ -263,6 +263,7 @@ export default {
     },1000* 5)
     this.timer = setInterval(() =>{
       this.loadList()
+      this.AutoDeletList()
     },1000* 60*5)
 
     try{
@@ -602,6 +603,15 @@ export default {
         this.load();
         this.dialogVisible = false
       })
+    },
+    AutoDeletList(){
+      var time=new Date();
+      let hou = time.getHours();
+      let min = time.getMinutes();
+      if(hou<1 && min<20)
+      {
+        this.deleteList();
+      }
     },
     save(){
       if(this.form.id)

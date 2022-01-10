@@ -286,13 +286,14 @@ public class UserController {
                 String truckDockNum = user2.getDocketno();
                 String despatchTime = user2.getDespatchtime();
                 String batchName = user2.getBatchname();
+                double qualoty = user2.getCummulatedqty();
                 if (truckDockNum.equalsIgnoreCase(user.getDocketno()))
                 {
-                  if(!despatchTime.equalsIgnoreCase(user.getDespatchtime()) || !batchName.equalsIgnoreCase(user.getDespatchtime()))
+                  if(!despatchTime.equalsIgnoreCase(user.getDespatchtime()) || !batchName.equalsIgnoreCase(user.getBatchname()) )
                   {
                     user2.setDespatchtime(user.getDespatchtime());
                     user2.setThisload(user.getThisload());
-                    user2.setCummulatedqty(user.getCummulatedqty());
+                    //user2.setCummulatedqty(user.getCummulatedqty());
                     user2.setBatchname(user.getBatchname());
                     userMapper.updateById(user2);
                     log.info("update user {}",user2.getDocketno());
