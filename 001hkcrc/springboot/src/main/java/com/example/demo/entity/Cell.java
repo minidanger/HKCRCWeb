@@ -14,6 +14,6 @@ public class Cell {
     private Integer floor;
     private String sensornumber;
     private Integer status; //0:open, 1:closed, 2: lost
-    private double latesttimestamp;
+    private String latesttimestamp;
     private String operator;
 }

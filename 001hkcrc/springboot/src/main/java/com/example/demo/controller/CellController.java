@@ -38,7 +38,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import java.time.LocalDateTime;
 
 
 @Slf4j
@@ -182,17 +186,18 @@ public class CellController {
       for (int i=0;i<infodetails.length;i++)
       {
         String[] infortemp = infodetails[i].split(":");
-        if(infortemp[0].contains("sitename"))cell.setSitename("infortemp[1]");
-        if(infortemp[0].contains("floor"))   cell.setFloor(1);//cell.setFloor(Integer.parseInt(infortemp[1]));
-        if(infortemp[0].contains("sensornumber"))cell.setSensornumber("1");//cell.setSensornumber(infortemp[1]);
-        if(infortemp[0].contains("status"))
-        {
-          cell.setStatus(Integer.parseInt(infortemp[1]));
-          log.info("status:{}",Integer.parseInt(infortemp[1]));
-        }
+        if(infortemp[0].contains("sitename"))     cell.setSitename(infortemp[1]);
+        if(infortemp[0].contains("floor"))        cell.setFloor(Integer.parseInt(infortemp[1]));
+        if(infortemp[0].contains("sensornumber")) cell.setSensornumber(infortemp[1]);
+        if(infortemp[0].contains("status"))       cell.setStatus(Integer.parseInt(infortemp[1]));
+
+        //LocalDateTime startDateTime = LocalDateTime.parse("2022-01-18T15:30:57.704", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        //log.info("change infor date: {}",startDateTime);
         //if(infortemp[0].contains("latestTimeStamp"))cell.setLatesttimestamp(Double.parseDouble(infortemp[1]) );
         //if(infortemp[0].contains("operator")&& !infortemp[1].equalsIgnoreCase("xxx"))cell.setOperator(infortemp[1]);
       }
+      DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+      cell.setLatesttimestamp(LocalDateTime.now().format(df));
 
       cellMapper.updateById(cell);
 

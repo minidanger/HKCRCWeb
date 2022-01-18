@@ -68,6 +68,7 @@ public class SocketHandler {
                 //return clientSocket.getKey();
                 // 以后发送数据
             }else {
+
                 String info = "";
                 while (true) {
                     if (clientSocket.getInputStream().available() > 0) {
@@ -82,7 +83,7 @@ public class SocketHandler {
                         }
                     }
                 }
-                log.info("Receive Socket information, which is: "+info);
+                //log.info("Receive Socket information, which is: "+info);
                 //return clientSocket.getMessage();
             }
         } catch (IOException e) {

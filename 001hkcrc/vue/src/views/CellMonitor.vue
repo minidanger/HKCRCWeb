@@ -27,7 +27,7 @@ export default {
   created() {
     this.timer = setInterval(() =>{
       this.updateCellInfo()
-    },1000* 5)
+    },1000* 1)
 
   },
   methods:{

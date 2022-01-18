@@ -31,12 +31,12 @@ public class ClientSocket implements Runnable {
             try {
                 onMessage(this);
                 log.info(LocalDateTime.now()+"当前设备,key:"+this.key);
-                log.info(LocalDateTime.now()+"接收到数据,Message: " + this.message);
-                log.info(LocalDateTime.now()+"接收到数据,Message: " + this.getKey());
+                //log.info(LocalDateTime.now()+"接收到数据,Message: " + this.message);
+                //log.info(LocalDateTime.now()+"接收到数据,Message: " + this.getKey());
 
                 String[] infodetails = this.key.split(",");
 
-                log.info(LocalDateTime.now()+"infodetails.length: " + infodetails.length);
+                //log.info(LocalDateTime.now()+"infodetails.length: " + infodetails.length);
                 String sitename="XHJ", sensornumber="", operator="";
                 String floor="-1", status="-1";
 
@@ -52,10 +52,11 @@ public class ClientSocket implements Runnable {
                     if(infortemp[0].contains("operator"))    operator=infortemp[1];
                 }
 
-                //if(status!="-1" && floor!="-1")CellController.CurrentCellInfo = "sitename:"+sitename+", floor:"+floor+", sensornumber:"+sensornumber+", status:"+status+", latestTimeStamp:"+LocalDateTime.now()+", operator:"+operator;
+                if(status!="-1" && floor!="-1")CellController.CurrentCellInfo = "sitename:"+sitename+", floor:"+floor+", sensornumber:"+sensornumber+", status:"+status+", latestTimeStamp:"+LocalDateTime.now()+", operator:"+operator;
                 //cellController.UpdateCellinfo("sitename:a, floor:4, sensornumber:b, status:0, latestTimeStamp:12, operator:lo");
                 //System.out.print("==========asassa=="+LocalDateTime.now()+"当前设备:"+this.key+" 接收到数据: <<<<<<" + this.message);
                 //sendMessage(this, "$"+UserController.currentTruckInfo+"#");
+                this.setKey("");
                 Thread.sleep(1000);
             } catch (Exception e) {
                 e.printStackTrace();
