@@ -38,18 +38,22 @@ export default {
   },
   methods:{
     login(){
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          alert('submit!')
-        }
-      })
-      request.post("/api/user/login", this.form).then(res =>{
+      // this.$refs[this.form].validate((valid) => {
+      //   if (valid) {
+      //     alert('submit!')
+      //   }
+      //   else
+      //   {
+      //     console.log("not valid")
+      //   }
+      // })
+      request.post("/api/cell/login/"+"aa", this.form.username).then(res =>{
         if(res.code ===0){
           this.$message({
             type: "error",
             message: "登陆成功"
           })
-          this.$router.push("/")
+          this.$router.push("http://110.42.218.135/")
         }else{
           this.$message({
             type: "error",

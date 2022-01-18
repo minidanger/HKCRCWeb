@@ -198,8 +198,8 @@ public class UserController {
       //https://dds.glorious.com.hk/gdds/dktGetByTrk.dds?trk=PC2865
       DocumentBuilder builder = factory.newDocumentBuilder();
       //Document d = builder.parse("C:\\Software\\IDEA_Projects\\GIT\\001hkcrc\\springboot\\src\\main\\resources\\file\\dktGetByTrk.xml");
-      //Document d = builder.parse("dktGetByTrk.xml");
-      Document d = builder.parse("https://dds.glorious.com.hk/GDDS/dktBySIT.dds?sit=1728");//"dktGetByTrk.xml"
+      Document d = builder.parse("dktGetByTrk.xml");
+      //Document d = builder.parse("https://dds.glorious.com.hk/GDDS/dktBySIT.dds?sit=1728");//"dktGetByTrk.xml"
       NodeList sList = d.getElementsByTagName("dockets");
 
 

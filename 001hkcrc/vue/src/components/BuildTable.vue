@@ -260,11 +260,11 @@ export default {
     this.timer = setInterval(() =>{
       this.updateCurrentTruck()
       this.GetCurrentTruck()
-    },1000* 5)
+    },1000* 5*20)
     this.timer = setInterval(() =>{
       this.loadList()
       this.AutoDeletList()
-    },1000* 60*5)
+    },1000* 60*5*2)
 
     try{
       if (sessionStorage.getItem("ShowID") == String(true)) {

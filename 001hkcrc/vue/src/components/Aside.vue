@@ -13,6 +13,7 @@
           </template>
             <el-menu-item index="buildTable">车辆监测</el-menu-item>
             <el-menu-item index="book">安全帽</el-menu-item>
+            <el-menu-item index="CellMonitor">井盖监测</el-menu-item>
         </el-sub-menu>
 
 

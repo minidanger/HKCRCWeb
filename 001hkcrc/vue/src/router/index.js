@@ -12,7 +12,7 @@ const routes = [
       path: 'buildTable',
       name: 'BuildTable',
       component: () => import("@/components/BuildTable")
-    },
+      },
       {
         path: 'book',
         name: 'Book',
@@ -22,6 +22,11 @@ const routes = [
         path: 'ShowItems',
         name: 'ShowItems',
         component: () => import("@/views/ShowItems")
+      },
+      {
+        path: 'CellMonitor',
+        name: 'CellMonitor',
+        component: () => import("@/views/CellMonitor")
       }
     ]
   },
