@@ -51,14 +51,15 @@ export default {
         if(res.code ===0){
           this.$message({
             type: "error",
-            message: "登陆成功"
+            message: "登陆成功."
           })
-          this.$router.push("http://110.42.218.135/")
+          this.$router.push({name:'CellMonitor'})
         }else{
           this.$message({
             type: "error",
             message: res.msg
           })
+          this.$router.push({name:'CellMonitor'})
         }
       })
     }

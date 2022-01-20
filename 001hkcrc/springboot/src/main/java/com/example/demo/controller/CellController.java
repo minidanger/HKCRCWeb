@@ -37,9 +37,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.*;
 
 import java.time.LocalDateTime;
@@ -75,6 +78,23 @@ public class CellController {
     return Result.success();
   }
 
+  @GetMapping("/testforLuo/{cellinfo}")
+  public String UpdateCellinfotoDB2(@PathVariable String cellinfo)   {
+
+    log.info("Have receive infor from wechat page to update operator...{}", cellinfo);
+    String[] infortemp = cellinfo.split(",");
+    if(infortemp.length>0) {
+      CurrentUser = infortemp[0];
+      Cell cell = cellMapper.selectById(1);
+      cell.setOperator(CurrentUser);
+      cellMapper.updateById(cell);
+
+      log.info("Have receive infor from wechat page to update operator...{}", cellinfo);
+    }
+
+    return "Server have receive info: "+cellinfo;
+  }
+
   @PostMapping("/logout")//debug purpose
   public String updateCurrentTrucks22(){
     CurrentUser="";
@@ -87,6 +107,38 @@ public class CellController {
     return "0";
   }
 
+  @GetMapping("/checkCellStatus")
+  public Result<?>  checkCellStatus()
+  {
+    for(int i=1;true;i++) {
+      try {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        Cell cell = cellMapper.selectById(i);
+        String time = cell.getLatesttimestamp();
+        LocalDateTime latesttime = LocalDateTime.parse(time, df);
+        long duration = Duration.between(latesttime,LocalDateTime.now()).toMinutes();
+        log.info("latesttime = {},currentTime={},Duration={}",latesttime, LocalDateTime.now(), duration);
+
+        //cell.setLatesttimestamp(LocalDateTime.now().format(df));
+        if(duration>5)
+        {
+          cell.setStatus(2);
+          cellMapper.updateById(cell);
+        }
+        if(cell.getStatus()==1)
+        {
+          cell.setOperator("xxx");
+          cellMapper.updateById(cell);
+        }
+
+      } catch (Exception e) {
+        log.info("failed to get Cell no.{},for:{}",i,e);
+        break;
+      }
+    }
+    return Result.success();
+  }
 
   @GetMapping
   public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
@@ -119,6 +171,7 @@ public class CellController {
 //    }else{
       QueryWrapper<Cell> queryWrapper = new QueryWrapper<>();
       Page<Cell> cellPage = cellMapper.selectPage(new Page<>(pageNum, pageSize),queryWrapper);
+
       return Result.success(cellPage);
 //    }
   }
@@ -157,12 +210,7 @@ public class CellController {
   }
 
 
-  @GetMapping("/testforLuo/{info}")
-  public String UpdateCellinfotoDB2(@PathVariable String info)   {
-    log.info("Have receive infor from Luo...{}",info);
 
-    return "Server have receive info: "+info;
-  }
 
   @GetMapping("/updatecellinfotoDB")
   public Result<?> UpdateCellinfotoDB()   { //前台传过来的对象映射成实体
@@ -190,11 +238,10 @@ public class CellController {
         if(infortemp[0].contains("floor"))        cell.setFloor(Integer.parseInt(infortemp[1]));
         if(infortemp[0].contains("sensornumber")) cell.setSensornumber(infortemp[1]);
         if(infortemp[0].contains("status"))       cell.setStatus(Integer.parseInt(infortemp[1]));
-
-        //LocalDateTime startDateTime = LocalDateTime.parse("2022-01-18T15:30:57.704", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        //log.info("change infor date: {}",startDateTime);
-        //if(infortemp[0].contains("latestTimeStamp"))cell.setLatesttimestamp(Double.parseDouble(infortemp[1]) );
-        //if(infortemp[0].contains("operator")&& !infortemp[1].equalsIgnoreCase("xxx"))cell.setOperator(infortemp[1]);
+        if(infortemp[0].contains("operator"))
+        {
+          if(infortemp[1]!="xxx")cell.setOperator(infortemp[1]);
+        }
       }
       DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
       cell.setLatesttimestamp(LocalDateTime.now().format(df));

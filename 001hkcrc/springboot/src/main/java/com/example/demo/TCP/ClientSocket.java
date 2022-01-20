@@ -49,7 +49,11 @@ public class ClientSocket implements Runnable {
                     if(infortemp[0].contains("sensornumber"))sensornumber=infortemp[1];
                     if(infortemp[0].contains("status"))      status=infortemp[1];
                     //if(infortemp[0]=="latestTimeStamp")cell.setLatesttimestamp(Double.parseDouble(infortemp[1]) );
-                    if(infortemp[0].contains("operator"))    operator=infortemp[1];
+                    if(infortemp[0].contains("operator"))
+                    {
+                        String[] temp = infortemp[1].split("}");
+                        operator=temp[0];
+                    }
                 }
 
                 if(status!="-1" && floor!="-1")CellController.CurrentCellInfo = "sitename:"+sitename+", floor:"+floor+", sensornumber:"+sensornumber+", status:"+status+", latestTimeStamp:"+LocalDateTime.now()+", operator:"+operator;

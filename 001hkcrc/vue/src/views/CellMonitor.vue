@@ -28,11 +28,14 @@ export default {
     this.timer = setInterval(() =>{
       this.updateCellInfo()
     },1000* 1)
+    this.timer = setInterval(() =>{
+      this.checkCellStatus()
+    },1000* 60*3)
 
   },
   methods:{
     updateCellInfo(){
-      console.log("Start update cell info function.")
+      console.log("Start update cell info function.*******")
 
       request.get("/api/cell", {
         params: {
@@ -52,6 +55,19 @@ export default {
       //this.websocketsend("qw");
       console.log("load done")
 
+    },
+
+    checkCellStatus(){
+      console.log("Start checkCellStatus info function.  333")
+
+      request.get("/api/cell/checkCellStatus").then(res => { //es6语法
+        console.log("res:")
+        console.log(res.data.docketno)
+        console.log("---res:")
+
+
+      })
+      console.log("********************")
     },
   },
   data(){
