@@ -27,6 +27,21 @@ const routes = [
         path: 'CellMonitor',
         name: 'CellMonitor',
         component: () => import("@/views/CellMonitor")
+      },
+      {
+        path: 'SensorMonitor',
+        name: 'SensorMonitor',
+        component: () => import("@/components/SensorMonitor")
+      },
+      {
+        path: 'Battery',
+        name: 'Battery',
+        component: () => import("@/components/Battery")
+      },
+      {
+        path: 'Sensor',
+        name: 'Sensor',
+        component: () => import("@/components/Sensor")
       }
     ]
   },
