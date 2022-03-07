@@ -145,7 +145,7 @@ public class CellController {
                             @RequestParam(defaultValue = "10") Integer pageSize,
                             @RequestParam(defaultValue = "") String search,
                             @RequestParam(defaultValue = "") String site) throws Exception {
-    log.info("==============find page cell========================");
+    //log.info("==============find page cell========================");
     UpdateCellinfotoDB();
     if(search.equalsIgnoreCase("o") )
     {
@@ -215,9 +215,9 @@ public class CellController {
   @GetMapping("/updatecellinfotoDB")
   public Result<?> UpdateCellinfotoDB()   { //前台传过来的对象映射成实体
 
-    log.info("===========1===receive cell infor========================{}",CurrentCellInfo);
+    //log.info("===========1===receive cell infor========================{}",CurrentCellInfo);
     if(CurrentCellInfo=="") return Result.success();
-    log.info("=========2=====receive cell infor========================{}",CurrentCellInfo);
+    //log.info("=========2=====receive cell infor========================{}",CurrentCellInfo);
     try {
       String sitename = "";
       int floor = 0;
@@ -240,7 +240,7 @@ public class CellController {
         if(infortemp[0].contains("status"))       cell.setStatus(Integer.parseInt(infortemp[1]));
         if(infortemp[0].contains("operator"))
         {
-          if(infortemp[1]!="xxx")cell.setOperator(infortemp[1]);
+          if(!infortemp[1].contains("xx"))cell.setOperator(infortemp[1]);
         }
       }
       DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -253,7 +253,7 @@ public class CellController {
       int insertNum=0;
 
     }catch(Exception e){
-      log.info("error hapepend in analysis cell sensor data, {}",e);
+      //log.info("error hapepend in analysis cell sensor data, {}",e);
       e.printStackTrace();
       CurrentCellInfo="";
     }
